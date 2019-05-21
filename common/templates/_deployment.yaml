@@ -1,0 +1,108 @@
+{{- define "common.deployment" -}}
+{{- $common := dict "Values" .Values.common -}} 
+{{- $noCommon := omit .Values "common" -}} 
+{{- $overrides := dict "Values" $noCommon -}} 
+{{- $noValues := omit . "Values" -}} 
+{{- with merge $noValues $overrides $common -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+{{ template "common.metadata" . }}
+spec:
+  template:
+    metadata:
+      labels:
+        simpletrip: {{ include "common.name" . }}
+    spec:
+      containers:
+      - name: {{ include "common.simpletripName" . }}
+        image: "{{ .Values.image.repository }}/{{ template "common.name" . }}:{{ .Values.image.tag }}"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+              name: spring-boot-cloud
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 300
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+        env:
+{{- if .Values.secrets.enabled -}}
+        - name: SPRING_CONFIG_ADDITIONAL-LOCATION
+          value: file:/etc/secrets/
+{{- end -}}
+        - name: SPRING_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: spring-boot-cloud
+              key: spring.environment
+{{- if .Values.aws.enabled -}}
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.aws.secretKeyRef.name }}
+              key: key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.aws.secretKeyRef.name }}
+              key: secret
+{{- end -}}
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: DD_SERVICE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['simpletrip']
+{{- if .Values.secrets.enabled -}}
+        volumeMounts:
+        - name: {{ .Values.secrets.name }}
+          mountPath: /etc/secrets/
+          readOnly: true
+      volumes:
+      - name: {{ .Values.secrets.name }}
+        secret:
+          secretName: {{ .Values.secrets.name }}
+{{- end -}}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: simpletrip
+                    operator: In
+                    values:
+                      - {{ include "common.name" . }}
+              topologyKey: kubernetes.io/hostname
+      nodeSelector:
+        role: general-purpose
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+{{- if .Values.horizontalPodScaler.enabled -}}
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "common.name" . }}
+spec:
+  minReplicas: 2
+  maxReplicas: 10
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: {{ include "common.name" . }}
+  targetCPUUtilizationPercentage: 80
+{{- end -}}
+{{- end -}}
+{{- end -}}
