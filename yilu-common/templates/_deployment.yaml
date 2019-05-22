@@ -36,7 +36,7 @@ spec:
 {{- if .Values.secrets.enabled -}}
         - name: SPRING_CONFIG_ADDITIONAL-LOCATION
           value: file:/etc/secrets/
-{{- end -}}
+{{ end }}
         - name: SPRING_ENVIRONMENT
           valueFrom:
             configMapKeyRef:
@@ -53,7 +53,7 @@ spec:
             secretKeyRef:
               name: {{ .Values.aws.secretKeyRef.name }}
               key: secret
-{{- end -}}
+{{ end }}
         - name: DD_AGENT_HOST
           valueFrom:
             fieldRef:
@@ -71,7 +71,7 @@ spec:
       - name: {{ .Values.secrets.name }}
         secret:
           secretName: {{ .Values.secrets.name }}
-{{- end -}}
+{{ end }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
