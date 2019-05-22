@@ -11,9 +11,9 @@ metadata:
   labels:
     simpletrip: {{ include "common.name" . }}
 spec:
-  type: NodePort
+  type: {{ .Values.service.type }}
   ports:
-  - port: 8080
+  - port: {{ .Values.service.port }}
   selector:
     simpletrip:  {{ include "common.name" . }}
 {{- end -}}
