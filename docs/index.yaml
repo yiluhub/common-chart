@@ -3,11 +3,11 @@ entries:
   yilu-common:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-05-22T16:37:28.6873+02:00
+    created: 2019-05-22T17:15:47.109585+02:00
     description: A Helm chart for Kubernetes
-    digest: 756cfd8d026c12d08f24578965ad10d54cc2ff39e7af9864a778ad4d32ac9b4f
+    digest: abd8f5e1758376033d5107653179b0eb7b8abe1f0430e27d0d4e0fc596c6caa7
     name: yilu-common
     urls:
     - https://yiluhub.github.io/common-chart/yilu-common-0.1.0.tgz
     version: 0.1.0
-generated: 2019-05-22T16:37:28.686731+02:00
+generated: 2019-05-22T17:15:47.109076+02:00

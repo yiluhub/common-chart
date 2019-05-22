@@ -1,5 +1,4 @@
 {{- define "common.hpa" -}}
-{{- if .Values.horizontalPodScaler.enabled -}}
 {{- $fullName := include "common.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
 {{- $common := dict "Values" .Values.common -}}
@@ -21,4 +20,3 @@ spec:
     targetCPUUtilizationPercentage: 80
 {{- end }}
 {{- end }}
-{{- end -}}

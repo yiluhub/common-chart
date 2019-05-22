@@ -8,9 +8,6 @@ service:
   type: NodePort
   port: 8080
 
-horizontalPodScaler:
-  enabled: true
-
 secrets:
   enabled: false
   name: ""
