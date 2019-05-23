@@ -16,5 +16,8 @@ $ git commit -m "version {version} has been created"
 $ git push origin master
 ```
 
-From there, I can do a `helm repo add yilu-common
-https://yiluhub.github.io/common-chart/
+From the environment that you work on, You can do  
+```
+$ helm repo add yilu-common https://yiluhub.github.io/common-chart/
+```
+And then yilu-common is gonna be available as dependency.
