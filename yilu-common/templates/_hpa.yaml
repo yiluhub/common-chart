@@ -1,6 +1,4 @@
 {{- define "common.hpa" -}}
-{{- $fullName := include "common.fullname" . -}}
-{{- $ingressPath := .Values.ingress.path -}}
 {{- $common := dict "Values" .Values.common -}}
 {{- $noCommon := omit .Values "common" -}}
 {{- $overrides := dict "Values" $noCommon -}}
@@ -9,14 +7,14 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-    name: {{ include "common.name" . }}
+  name: {{ include "common.name" . }}
 spec:
-    minReplicas: 2
-    maxReplicas: 10
-    scaleTargetRef:
-        apiVersion: extensions/v1beta1
-        kind: Deployment
-        name: {{ include "common.name" . }}
-    targetCPUUtilizationPercentage: 80
+  minReplicas: {{ .Values.hpaMinReplicas }}
+  maxReplicas: {{ .Values.hpaMaxReplicas }}
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: {{ include "common.name" . }}
+  targetCPUUtilizationPercentage: {{ .Values.hpaTargetCPUUtilizationPercentage }}
 {{- end }}
 {{- end }}

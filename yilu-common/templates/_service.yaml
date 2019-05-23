@@ -1,9 +1,4 @@
 {{- define "common.service" -}}
-{{- $common := dict "Values" .Values.common -}} 
-{{- $noCommon := omit .Values "common" -}} 
-{{- $overrides := dict "Values" $noCommon -}} 
-{{- $noValues := omit . "Values" -}} 
-{{- with merge $noValues $overrides $common -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,10 +6,9 @@ metadata:
   labels:
     simpletrip: {{ include "common.name" . }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.serviceType }}
   ports:
-  - port: {{ .Values.service.port }}
+  - port: {{ .Values.servicePort }}
   selector:
-    simpletrip:  {{ include "common.name" . }}
-{{- end -}}
+    simpletrip: {{ include "common.name" . }}
 {{- end -}}

@@ -15,25 +15,25 @@ spec:
     spec:
       containers:
       - name: {{ include "common.simpletripName" . }}
-        image: "{{ .Values.image.repository }}/{{ template "common.name" . }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: {{ .Values.imageRepository }}/{{ template "common.name" . }}:{{ .Values.imageTag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
-        - containerPort: 8080
+        - containerPort: {{ .Values.portsContainerPort }}
         envFrom:
         - configMapRef:
-              name: spring-boot-cloud
+            name: spring-boot-cloud
         livenessProbe:
           httpGet:
             path: /actuator/health
             port: 8080
-          initialDelaySeconds: 300
+          initialDelaySeconds: {{ .Values.livenessProbeInitialDelaySeconds }}
         readinessProbe:
           httpGet:
             path: /actuator/health
             port: 8080
-          initialDelaySeconds: 30
+          initialDelaySeconds: {{ .Values.readinessProbeInitialDelaySeconds }}
         env:
-{{- if .Values.secrets.enabled -}}
+{{- if .Values.secretsEnabled -}}
         - name: SPRING_CONFIG_ADDITIONAL-LOCATION
           value: file:/etc/secrets/
 {{ end }}
@@ -42,16 +42,16 @@ spec:
             configMapKeyRef:
               name: spring-boot-cloud
               key: spring.environment
-{{- if .Values.aws.enabled -}}
+{{- if .Values.awsEnabled -}}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.aws.secretKeyRef.name }}
+              name: {{ .Values.awsSecretKeyRefName }}
               key: key_id
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.aws.secretKeyRef.name }}
+              name: {{ .Values.awsSecretKeyRefName }}
               key: secret
 {{ end }}
         - name: DD_AGENT_HOST
@@ -62,15 +62,15 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.labels['simpletrip']
-{{- if .Values.secrets.enabled -}}
+{{- if .Values.secretsEnabled -}}
         volumeMounts:
-        - name: {{ .Values.secrets.name }}
+        - name: {{ .Values.secretsName }}
           mountPath: /etc/secrets/
           readOnly: true
       volumes:
-      - name: {{ .Values.secrets.name }}
+      - name: {{ .Values.secretsName }}
         secret:
-          secretName: {{ .Values.secrets.name }}
+          secretName: {{ .Values.secretsName }}
 {{ end }}
       affinity:
         podAntiAffinity:

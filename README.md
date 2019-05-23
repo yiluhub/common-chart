@@ -11,8 +11,8 @@ create and publish docs like this:
 $ helm package yilu-common
 $ mv yilu-common-{version}.tgz docs // do not forget to increase the version after makind changes
 $ helm repo index docs --url https://yiluhub.github.io/common-chart/
-$ git add -i
-$ git commit -av
+$ git add .
+$ git commit -m "version {version} has been created"
 $ git push origin master
 ```
 
