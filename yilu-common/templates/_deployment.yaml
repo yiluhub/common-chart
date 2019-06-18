@@ -33,7 +33,7 @@ spec:
             port: 8080
           initialDelaySeconds: {{ .Values.readinessProbeInitialDelaySeconds }}
         env:
-{{- if .Values.secretsEnabled -}}
+{{- if .Values.secretsEnabled }}
         - name: SPRING_CONFIG_ADDITIONAL-LOCATION
           value: file:/etc/secrets/
 {{- end }}
@@ -42,7 +42,7 @@ spec:
             configMapKeyRef:
               name: spring-boot-cloud
               key: spring.environment
-{{- if .Values.awsEnabled -}}
+{{- if .Values.awsEnabled }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -62,7 +62,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.labels['simpletrip']
-{{- if .Values.secretsEnabled -}}
+{{- if .Values.secretsEnabled }}
         volumeMounts:
         - name: {{ .Values.secretsName }}
           mountPath: /etc/secrets/

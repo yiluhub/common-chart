@@ -7,9 +7,13 @@ This is an example charts repository.
 I set up GitHub Pages to point to the `docs` folder. From there, I can
 create and publish docs like this:
 
+
+- Increase the `version` in `Chart.yml` file 
+- Run the commands shown below
+
 ```console
 $ helm package yilu-common
-$ mv yilu-common-{version}.tgz docs // do not forget to increase the version after making changes
+$ mv yilu-common-{version}.tgz docs 
 $ helm repo index docs --url https://yiluhub.github.io/common-chart/
 $ git add .
 $ git commit -m "version {version} has been created"
