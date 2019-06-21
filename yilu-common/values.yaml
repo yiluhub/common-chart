@@ -16,6 +16,8 @@ exports:
     awsEnabled: false
     awsSecretKeyRefName: default
 
+    mockClientsConfEnabled: false
+
     # SERVICE
     serviceType: NodePort
     servicePort: 8080
@@ -24,3 +26,4 @@ exports:
     hpaTargetCPUUtilizationPercentage: 80
     hpaMinReplicas: 2
     hpaMaxReplicas: 10
+

@@ -22,6 +22,11 @@ spec:
         envFrom:
         - configMapRef:
             name: spring-boot-cloud
+{{- if .Values.mockClientsConfEnabled }}
+        - configMapRef:
+            name: mock-clients-configuration
+            optional: true
+{{- end }}
         livenessProbe:
           httpGet:
             path: /actuator/health
