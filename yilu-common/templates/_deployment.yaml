@@ -14,7 +14,7 @@ spec:
         simpletrip: {{ include "common.name" . }}
     spec:
       containers:
-      - name: {{ include "common.name" . }}
+      - name: {{ include "common.containerName" . }}
         image: {{ .Values.imageRepository }}/{{ template "common.name" . }}:{{ .Values.imageTag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
