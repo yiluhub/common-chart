@@ -22,11 +22,11 @@ spec:
         envFrom:
         - configMapRef:
             name: spring-boot-cloud
-        {{- if .Values.mockClientsConfEnabled }}
+{{- if .Values.mockClientsConfEnabled }}
         - configMapRef:
             name: mock-clients-configuration
             optional: true
-        {{- end }}
+{{- end }}
         livenessProbe:
           httpGet:
             path: {{ .Values.livenessProbePath }}
@@ -38,10 +38,10 @@ spec:
             port: 8080
           initialDelaySeconds: {{ .Values.readinessProbeInitialDelaySeconds }}
         env:
-        {{- if .Values.secretsEnabled }}
+{{- if .Values.secretsEnabled }}
         - name: SPRING_CONFIG_ADDITIONAL-LOCATION
           value: file:/etc/secrets/
-        {{- end }}
+{{- end }}
         - name: SPRING_ENVIRONMENT
           valueFrom:
             configMapKeyRef:
@@ -52,7 +52,7 @@ spec:
             configMapKeyRef:
               name: spring-boot-cloud
               key: cloud.environment
-        {{- if .Values.awsEnabled }}
+{{- if .Values.awsEnabled }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -63,7 +63,7 @@ spec:
             secretKeyRef:
               name: {{ .Values.awsSecretKeyRefName }}
               key: secret
-        {{- end }}
+{{- end }}
         - name: DD_AGENT_HOST
           valueFrom:
             fieldRef:
@@ -72,11 +72,11 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.labels['simpletrip']
-        {{- if .Values.autoTraceIdInjection }}
+{{- if .Values.autoTraceIdInjection }}
         - name: DD_LOGS_INJECTION
           value: 'true'
-        {{- end }}
-        {{- if .Values.secretsEnabled }}
+{{- end }}
+{{- if .Values.secretsEnabled }}
         volumeMounts:
         - name: {{ .Values.secretsName }}
           mountPath: /etc/secrets/
@@ -85,7 +85,7 @@ spec:
       - name: {{ .Values.secretsName }}
         secret:
           secretName: {{ .Values.secretsName }}
-      {{- end }}
+{{- end }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
