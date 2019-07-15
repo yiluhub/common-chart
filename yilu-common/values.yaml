@@ -1,25 +1,30 @@
 exports:
   data:
     # DEPLOYMENT
-    imageRepository: 432560034976.dkr.ecr.eu-central-1.amazonaws.com/simpletrip
-    imagePullPolicy: Always
-    imageTag: latest
+    imageRepository: "432560034976.dkr.ecr.eu-central-1.amazonaws.com/simpletrip"
+    imagePullPolicy: "Always"
+    imageTag: "latest"
 
     portsContainerPort: 8080
 
     livenessProbeInitialDelaySeconds: 300
+    livenessProbePath: "/actuator/health"
     readinessProbeInitialDelaySeconds: 30
+    readinessProbePath: "/actuator/health"
 
     secretsEnabled: false
-    secretsName: default
+    secretsName: "default"
 
     awsEnabled: false
-    awsSecretKeyRefName: default
+    awsSecretKeyRefName: "default"
 
     mockClientsConfEnabled: false
 
+    datadogServiceNameEnv: "DD_SERVICE_NAME"
+    autoTraceIdInjection: false
+
     # SERVICE
-    serviceType: NodePort
+    serviceType: "NodePort"
     servicePort: 8080
 
     # HorizontalPodAutoscaler

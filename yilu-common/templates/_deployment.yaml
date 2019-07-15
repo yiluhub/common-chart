@@ -14,7 +14,7 @@ spec:
         simpletrip: {{ include "common.name" . }}
     spec:
       containers:
-      - name: {{ include "common.simpletripName" . }}
+      - name: {{ include "common.name" . }}
         image: {{ .Values.imageRepository }}/{{ template "common.name" . }}:{{ .Values.imageTag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
@@ -22,32 +22,37 @@ spec:
         envFrom:
         - configMapRef:
             name: spring-boot-cloud
-{{- if .Values.mockClientsConfEnabled }}
+        {{- if .Values.mockClientsConfEnabled }}
         - configMapRef:
             name: mock-clients-configuration
             optional: true
-{{- end }}
+        {{- end }}
         livenessProbe:
           httpGet:
-            path: /actuator/health
+            path: {{ .Values.livenessProbePath }}
             port: 8080
           initialDelaySeconds: {{ .Values.livenessProbeInitialDelaySeconds }}
         readinessProbe:
           httpGet:
-            path: /actuator/health
+            path: {{ .Values.readinessProbePath }}
             port: 8080
           initialDelaySeconds: {{ .Values.readinessProbeInitialDelaySeconds }}
         env:
-{{- if .Values.secretsEnabled }}
+        {{- if .Values.secretsEnabled }}
         - name: SPRING_CONFIG_ADDITIONAL-LOCATION
           value: file:/etc/secrets/
-{{- end }}
+        {{- end }}
         - name: SPRING_ENVIRONMENT
           valueFrom:
             configMapKeyRef:
               name: spring-boot-cloud
               key: spring.environment
-{{- if .Values.awsEnabled }}
+        - name: CLOUD_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: spring-boot-cloud
+              key: cloud.environment
+        {{- if .Values.awsEnabled }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -58,16 +63,20 @@ spec:
             secretKeyRef:
               name: {{ .Values.awsSecretKeyRefName }}
               key: secret
-{{- end }}
+        {{- end }}
         - name: DD_AGENT_HOST
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP
-        - name: DD_SERVICE_NAME
+        - name: {{ .Values.datadogServiceNameEnv}}
           valueFrom:
             fieldRef:
               fieldPath: metadata.labels['simpletrip']
-{{- if .Values.secretsEnabled }}
+        {{- if .Values.autoTraceIdInjection }}
+        - name: DD_LOGS_INJECTION
+          value: 'true'
+        {{- end }}
+        {{- if .Values.secretsEnabled }}
         volumeMounts:
         - name: {{ .Values.secretsName }}
           mountPath: /etc/secrets/
@@ -76,7 +85,7 @@ spec:
       - name: {{ .Values.secretsName }}
         secret:
           secretName: {{ .Values.secretsName }}
-{{- end }}
+      {{- end }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
