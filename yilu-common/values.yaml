@@ -8,7 +8,9 @@ exports:
     portsContainerPort: 8080
 
     livenessProbeInitialDelaySeconds: 300
+    livenessProbePath: /actuator/health
     readinessProbeInitialDelaySeconds: 30
+    readinessProbePath: /actuator/health
 
     secretsEnabled: false
     secretsName: default
@@ -17,6 +19,9 @@ exports:
     awsSecretKeyRefName: default
 
     mockClientsConfEnabled: false
+
+    datadogServiceNameEnv: DD_SERVICE_NAME
+    autoTraceIdInjection: false
 
     # SERVICE
     serviceType: NodePort

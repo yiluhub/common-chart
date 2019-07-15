@@ -1,7 +1,7 @@
 {{- define "common.name" -}}
-{{- default .Values.serviceName | trunc 63 | trimSuffix "-" -}}
+{{- .Values.serviceName | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "common.simpletripName" -}}
-{{- printf "simpletrip-%s" .Values.serviceName | trunc 63 | trimSuffix "-" -}}
+{{- define "common.containerName" -}}
+{{- default ( printf "simpletrip-%s" .Values.serviceName ) .Values.containerName | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

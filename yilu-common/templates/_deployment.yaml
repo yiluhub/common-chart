@@ -14,7 +14,7 @@ spec:
         simpletrip: {{ include "common.name" . }}
     spec:
       containers:
-      - name: {{ include "common.simpletripName" . }}
+      - name: {{ include "common.containerName" . }}
         image: {{ .Values.imageRepository }}/{{ template "common.name" . }}:{{ .Values.imageTag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
@@ -29,12 +29,12 @@ spec:
 {{- end }}
         livenessProbe:
           httpGet:
-            path: /actuator/health
+            path: {{ .Values.livenessProbePath }}
             port: 8080
           initialDelaySeconds: {{ .Values.livenessProbeInitialDelaySeconds }}
         readinessProbe:
           httpGet:
-            path: /actuator/health
+            path: {{ .Values.readinessProbePath }}
             port: 8080
           initialDelaySeconds: {{ .Values.readinessProbeInitialDelaySeconds }}
         env:
@@ -47,6 +47,11 @@ spec:
             configMapKeyRef:
               name: spring-boot-cloud
               key: spring.environment
+        - name: CLOUD_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: spring-boot-cloud
+              key: cloud.environment
 {{- if .Values.awsEnabled }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
@@ -63,10 +68,14 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP
-        - name: DD_SERVICE_NAME
+        - name: {{ .Values.datadogServiceNameEnv}}
           valueFrom:
             fieldRef:
               fieldPath: metadata.labels['simpletrip']
+{{- if .Values.autoTraceIdInjection }}
+        - name: DD_LOGS_INJECTION
+          value: 'true'
+{{- end }}
 {{- if .Values.secretsEnabled }}
         volumeMounts:
         - name: {{ .Values.secretsName }}
