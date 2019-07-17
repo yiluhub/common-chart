@@ -1,4 +1,4 @@
-# Common chard
+# Common chart
 
 This is an example charts repository.
 
@@ -25,3 +25,33 @@ From the environment that you work on, You can do
 $ helm repo add yilu-common https://yiluhub.github.io/common-chart/
 ```
 And then yilu-common is gonna be available as dependency.
+
+### Example chart
+
+```bash
+$ pwd
+/Projects/yilu/example-service
+
+# globally configured (run once after Helm install)
+$ helm init --client-only
+$ helm repo add yilu-common https://yiluhub.github.io/common-chart/
+
+# project folder specific
+$ helm dependency update example-service-chart
+$ helm template example-service-chart
+---
+# Source: example-service-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-service
+  labels:
+    simpletrip: example-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+  selector:
+    simpletrip: example-service
+---
+```
