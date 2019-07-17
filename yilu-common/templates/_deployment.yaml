@@ -77,6 +77,8 @@ spec:
           value: 'true'
 {{- end }}
 {{- if .Values.secretsEnabled }}
+        - name: SPRING_CONFIG_ADDITIONAL-LOCATION
+          value: file:/etc/secrets/
         volumeMounts:
         - name: {{ .Values.secretsName }}
           mountPath: /etc/secrets/
