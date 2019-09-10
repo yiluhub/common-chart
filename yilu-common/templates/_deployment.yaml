@@ -18,7 +18,7 @@ spec:
         image: {{ .Values.imageRepository }}/{{ template "common.name" . }}:{{ .Values.imageTag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
-        - containerPort: {{ .Values.portsContainerPort }}
+        - containerPort: {{ .Values.servicePort }}
         envFrom:
         - configMapRef:
             name: spring-boot-cloud
@@ -30,12 +30,12 @@ spec:
         livenessProbe:
           httpGet:
             path: {{ .Values.livenessProbePath }}
-            port: 8080
+            port: {{ .Values.servicePort }}
           initialDelaySeconds: {{ .Values.livenessProbeInitialDelaySeconds }}
         readinessProbe:
           httpGet:
             path: {{ .Values.readinessProbePath }}
-            port: 8080
+            port: {{ .Values.servicePort }}
           initialDelaySeconds: {{ .Values.readinessProbeInitialDelaySeconds }}
         env:
 {{- if .Values.secretsEnabled }}
