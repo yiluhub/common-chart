@@ -5,8 +5,6 @@ exports:
     imagePullPolicy: Always
     imageTag: latest
 
-    portsContainerPort: 8080
-
     livenessProbeInitialDelaySeconds: 300
     livenessProbePath: /actuator/health
     readinessProbeInitialDelaySeconds: 30
@@ -25,6 +23,7 @@ exports:
 
     # SERVICE
     serviceType: NodePort
+    # also used as a deployment port, liveness and readiness port
     servicePort: 8080
 
     # HorizontalPodAutoscaler
