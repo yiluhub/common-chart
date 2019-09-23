@@ -38,6 +38,9 @@ spec:
             port: {{ .Values.servicePort }}
           initialDelaySeconds: {{ .Values.readinessProbeInitialDelaySeconds }}
         env:
+{{- with .Values.extraEnv }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
 {{- if .Values.secretsEnabled }}
         - name: SPRING_CONFIG_ADDITIONAL-LOCATION
           value: file:/etc/secrets/
