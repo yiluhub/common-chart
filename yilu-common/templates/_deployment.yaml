@@ -79,6 +79,10 @@ spec:
         - name: DD_LOGS_INJECTION
           value: 'true'
 {{- end }}
+{{- if .Values.traceAnalyticsEnabled }}
+        - name: DD_TRACE_ANALYTICS_ENABLED
+          value: 'true'
+{{- end }}
 {{- if .Values.secretsEnabled }}
         volumeMounts:
         - name: {{ .Values.secretsName }}
