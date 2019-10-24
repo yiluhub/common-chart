@@ -19,8 +19,9 @@ exports:
     mockClientsConfEnabled: false
 
     datadogServiceNameEnv: DD_SERVICE_NAME
-    autoTraceIdInjection: true
-    traceAnalyticsEnabled: true
+    autoTraceIdInjection: false
+    traceAnalyticsEnabled: false
+    analyzedSpansEnabled: false
 
     # SERVICE
     serviceType: NodePort

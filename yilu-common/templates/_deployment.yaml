@@ -83,6 +83,10 @@ spec:
         - name: DD_TRACE_ANALYTICS_ENABLED
           value: 'true'
 {{- end }}
+{{- if .Values.analyzedSpansEnabled }}
+        - name: DD_APM_ANALYZED_SPANS
+          value: 'true'
+{{- end }}
 {{- if .Values.secretsEnabled }}
         volumeMounts:
         - name: {{ .Values.secretsName }}
