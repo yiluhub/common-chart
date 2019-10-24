@@ -20,6 +20,8 @@ exports:
 
     datadogServiceNameEnv: DD_SERVICE_NAME
     autoTraceIdInjection: false
+    traceAnalyticsEnabled: false
+    analyzedSpansEnabled: false
 
     # SERVICE
     serviceType: NodePort
