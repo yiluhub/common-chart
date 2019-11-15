@@ -17,6 +17,11 @@ spec:
       - name: {{ include "common.containerName" . }}
         image: {{ .Values.imageRepository }}/{{ template "common.name" . }}:{{ .Values.imageTag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        args: [
+{{  range .Values.arguments }}
+{{ . }}
+{{ end }}
+          ]
         ports:
         - containerPort: {{ .Values.servicePort }}
         envFrom:
