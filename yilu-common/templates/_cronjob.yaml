@@ -24,7 +24,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: {{ include "common.containerName" . }}
-              image: {{ .Values.imageRepository }}/{{ template "common.name" . }}:{{ .Values.imageTag }}
+              image: {{- if .Values.job.overrideImageUrl }} {{ .Values.job.overrideImageUrl }} {{ else }} {{ .Values.imageRepository }}/{{ template "common.name" . }}:{{ .Values.imageTag }} {{- end }}
               imagePullPolicy: {{ .Values.imagePullPolicy }}
               {{- if .Values.job.command }}
               command: {{ .Values.job.command }}
@@ -33,41 +33,12 @@ spec:
               args:
 {{ toYaml . | indent 16 }}
               {{- end }}
+              {{- if .Values.job.extraEnv }}
               envFrom:
                 - configMapRef:
-                    name: spring-boot-cloud
+                    name: {{ .Values.job.extraEnv }}
+              {{- end }}
               env:
-                {{- with .Values.extraEnv }}
-                {{ tpl . $ | indent 16 }}
-                {{- end }}
-                {{- if .Values.secretsEnabled }}
-              - name: SPRING_CONFIG_ADDITIONAL-LOCATION
-                value: file:/etc/secrets/
-                {{- end }}
-              - name: SPRING_ENVIRONMENT
-                valueFrom:
-                  configMapKeyRef:
-                    name: spring-boot-cloud
-                    key: spring.environment
-              - name: CLOUD_ENVIRONMENT
-                valueFrom:
-                  configMapKeyRef:
-                    name: spring-boot-cloud
-                    key: cloud.environment
-              - name: SERVER_PORT
-                value: {{ quote .Values.servicePort }}
-                {{- if .Values.awsEnabled }}
-              - name: AWS_ACCESS_KEY_ID
-                valueFrom:
-                  secretKeyRef:
-                    name: {{ .Values.awsSecretKeyRefName }}
-                    key: key_id
-              - name: AWS_SECRET_ACCESS_KEY
-                valueFrom:
-                  secretKeyRef:
-                    name: {{ .Values.awsSecretKeyRefName }}
-                    key: secret
-                {{- end }}
               - name: DD_AGENT_HOST
                 valueFrom:
                   fieldRef:
@@ -87,16 +58,6 @@ spec:
                 {{- if .Values.analyzedSpansEnabled }}
               - name: DD_APM_ANALYZED_SPANS
                 value: 'true'
-                {{- end }}
-                {{- if .Values.secretsEnabled }}
-              volumeMounts:
-                - name: {{ .Values.secretsName }}
-                  mountPath: /etc/secrets/
-                  readOnly: true
-              volumes:
-                - name: {{ .Values.secretsName }}
-                  secret:
-                    secretName: {{ .Values.secretsName }}
                 {{- end }}
 {{- end }}
 {{- end }}
