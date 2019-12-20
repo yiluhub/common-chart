@@ -1,0 +1,103 @@
+{{- define "common.cronjob" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+{{- if .Values.job }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "common.name" . }}
+spec:
+  concurrencyPolicy: {{ .Values.job.concurrencyPolicy }}
+  schedule: {{ .Values.job.schedule }}
+  successfulJobsHistoryLimit: {{ .Values.job.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.job.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            simpletrip: {{ include "common.name" . }}
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: {{ include "common.containerName" . }}
+              image: {{ .Values.imageRepository }}/{{ template "common.name" . }}:{{ .Values.imageTag }}
+              imagePullPolicy: {{ .Values.imagePullPolicy }}
+              {{- if .Values.job.command }}
+              command: {{ .Values.job.command }}
+              {{- end }}
+              {{- with .Values.job.args }}
+              args:
+{{ toYaml . | indent 16 }}
+              {{- end }}
+              envFrom:
+                - configMapRef:
+                    name: spring-boot-cloud
+              env:
+                {{- with .Values.extraEnv }}
+                {{ tpl . $ | indent 16 }}
+                {{- end }}
+                {{- if .Values.secretsEnabled }}
+              - name: SPRING_CONFIG_ADDITIONAL-LOCATION
+                value: file:/etc/secrets/
+                {{- end }}
+              - name: SPRING_ENVIRONMENT
+                valueFrom:
+                  configMapKeyRef:
+                    name: spring-boot-cloud
+                    key: spring.environment
+              - name: CLOUD_ENVIRONMENT
+                valueFrom:
+                  configMapKeyRef:
+                    name: spring-boot-cloud
+                    key: cloud.environment
+              - name: SERVER_PORT
+                value: {{ quote .Values.servicePort }}
+                {{- if .Values.awsEnabled }}
+              - name: AWS_ACCESS_KEY_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ .Values.awsSecretKeyRefName }}
+                    key: key_id
+              - name: AWS_SECRET_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ .Values.awsSecretKeyRefName }}
+                    key: secret
+                {{- end }}
+              - name: DD_AGENT_HOST
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.hostIP
+              - name: {{ .Values.datadogServiceNameEnv}}
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.labels['simpletrip']
+                {{- if .Values.autoTraceIdInjection }}
+              - name: DD_LOGS_INJECTION
+                value: 'true'
+                {{- end }}
+                {{- if .Values.traceAnalyticsEnabled }}
+              - name: DD_TRACE_ANALYTICS_ENABLED
+                value: 'true'
+                {{- end }}
+                {{- if .Values.analyzedSpansEnabled }}
+              - name: DD_APM_ANALYZED_SPANS
+                value: 'true'
+                {{- end }}
+                {{- if .Values.secretsEnabled }}
+              volumeMounts:
+                - name: {{ .Values.secretsName }}
+                  mountPath: /etc/secrets/
+                  readOnly: true
+              volumes:
+                - name: {{ .Values.secretsName }}
+                  secret:
+                    secretName: {{ .Values.secretsName }}
+                {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
