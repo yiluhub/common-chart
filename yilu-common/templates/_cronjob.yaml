@@ -33,10 +33,10 @@ spec:
               args:
 {{ toYaml . | indent 16 }}
               {{- end }}
-              {{- if .Values.job.extraEnv }}
+              {{- if .Values.job.extraEnvConfigMapRef }}
               envFrom:
                 - configMapRef:
-                    name: {{ .Values.job.extraEnv }}
+                    name: {{ .Values.job.extraEnvConfigMapRef }}
               {{- end }}
               env:
               - name: DD_AGENT_HOST

@@ -66,7 +66,7 @@ job:
   successfulJobsHistoryLimit: 10
   failedJobsHistoryLimit: 10
   overrideImageUrl: busybox  # optional; otherwise it uses the same image used for deployment
-  extraEnv: extra-env-name  # optional; if you want to have extra env configuration
+  extraEnvConfigMapRef: extra-env-config-map-name  # optional; if you want to have extra env configuration
   image:
   args:
     - java
