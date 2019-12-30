@@ -55,3 +55,22 @@ spec:
     simpletrip: example-service
 ---
 ```
+
+#### Example CronJob configuration
+```
+serviceName: "whatever-name"
+containerName: "whatever-container-name"
+job:
+  concurrencyPolicy: "Forbid"
+  schedule: "'*/15 * * * *'"
+  successfulJobsHistoryLimit: 10
+  failedJobsHistoryLimit: 10
+  overrideImageUrl: busybox  # optional; otherwise it uses the same image used for deployment
+  extraEnvConfigMapRef: extra-env-config-map-name  # optional; if you want to have extra env configuration
+  image:
+  args:
+    - java
+    - -jar
+    - /usr/local/lib/app.jar
+    - -v
+```
