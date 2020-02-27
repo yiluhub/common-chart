@@ -27,6 +27,8 @@ exports:
     serviceType: NodePort
     # also used as a deployment port, liveness and readiness port
     servicePort: 8080
+    httpsEnabled: false
+    httpsPort: 443
 
     # HorizontalPodAutoscaler
     hpaTargetCPUUtilizationPercentage: 80
