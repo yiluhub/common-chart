@@ -3,12 +3,12 @@ entries:
   yilu-common:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-02-26T18:25:40.197148579+01:00"
+    created: "2019-12-20T17:13:01.220304+02:00"
     description: A Helm chart for Kubernetes
     digest: 35cae75886c094004adb2cfee2fec769548806fd0b6519010946e2f247ef4125
     name: yilu-common
     urls:
-    - http://127.0.0.1:8879/yilu-common-0.1.10.tgz
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.10.tgz
     version: 0.1.10
   - apiVersion: v1
     appVersion: "1.0"
@@ -17,87 +17,87 @@ entries:
     digest: 0cd4496c1e4f15c893fb740711f1892939bf296268cc04509e35e32cd5703a07
     name: yilu-common
     urls:
-    - http://127.0.0.1:8879/yilu-common-0.1.9.tgz
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.9.tgz
     version: 0.1.9
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-02-26T18:25:40.199441601+01:00"
+    created: "2019-12-20T17:13:01.21998+02:00"
     description: A Helm chart for Kubernetes
     digest: 481dcd6c96d3cfe3b1026f07de625fce9c22065414b9404cac154abc722d0b96
     name: yilu-common
     urls:
-    - http://127.0.0.1:8879/yilu-common-0.1.8.tgz
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.8.tgz
     version: 0.1.8
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-02-26T18:25:40.199163747+01:00"
+    created: "2019-12-20T17:13:01.219564+02:00"
     description: A Helm chart for Kubernetes
     digest: b71de56827cde5dd7b2f3816a21e00cdc977a7c3e7ba24f7df2a30062cde8c9a
     name: yilu-common
     urls:
-    - http://127.0.0.1:8879/yilu-common-0.1.7.tgz
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.7.tgz
     version: 0.1.7
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-02-26T18:25:40.198890614+01:00"
+    created: "2019-12-20T17:13:01.219125+02:00"
     description: A Helm chart for Kubernetes
     digest: d50a82d169348fc7a6d1805173db5642a06171d7687b6412d1034077e870c420
     name: yilu-common
     urls:
-    - http://127.0.0.1:8879/yilu-common-0.1.6.tgz
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.6.tgz
     version: 0.1.6
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-02-26T18:25:40.198575175+01:00"
+    created: "2019-12-20T17:13:01.218349+02:00"
     description: A Helm chart for Kubernetes
     digest: ea71ba117810f7793b1236b0152d43ef63298cd492ae0a93adb5167549312dff
     name: yilu-common
     urls:
-    - http://127.0.0.1:8879/yilu-common-0.1.5.tgz
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.5.tgz
     version: 0.1.5
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-02-26T18:25:40.198288056+01:00"
+    created: "2019-12-20T17:13:01.21785+02:00"
     description: A Helm chart for Kubernetes
     digest: 44e6c426f4db3701a9811b323213b0acbefd54e625ced08e2e24c5adcd1f0634
     name: yilu-common
     urls:
-    - http://127.0.0.1:8879/yilu-common-0.1.4.tgz
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-02-26T18:25:40.197997142+01:00"
+    created: "2019-12-20T17:13:01.217353+02:00"
     description: A Helm chart for Kubernetes
     digest: 8595b70c5ace9a8ba298872bd3e4d6d315a4c373d1c9f1e4f3853da50e465899
     name: yilu-common
     urls:
-    - http://127.0.0.1:8879/yilu-common-0.1.3.tgz
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-02-26T18:25:40.197534822+01:00"
+    created: "2019-12-20T17:13:01.216389+02:00"
     description: A Helm chart for Kubernetes
     digest: cf278807c003a49bbe71368d7f5860927e0d79d93717ffe1e272561427a04925
     name: yilu-common
     urls:
-    - http://127.0.0.1:8879/yilu-common-0.1.2.tgz
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-02-26T18:25:40.196710441+01:00"
+    created: "2019-12-20T17:13:01.21591+02:00"
     description: A Helm chart for Kubernetes
     digest: e67a1d7da8fa24116ccc880e3772d9ad6d57da63649371e924adb8cf6d5303f3
     name: yilu-common
     urls:
-    - http://127.0.0.1:8879/yilu-common-0.1.1.tgz
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-02-26T18:25:40.196249631+01:00"
+    created: "2019-12-20T17:13:01.215347+02:00"
     description: A Helm chart for Kubernetes
     digest: ea384fe88fd24b6cd3fe4b83f01fc5beeae5c48fed19efa39eebb1cf01e5375d
     name: yilu-common
     urls:
-    - http://127.0.0.1:8879/yilu-common-0.1.0.tgz
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.0.tgz
     version: 0.1.0
-generated: "2020-02-26T18:25:40.195471638+01:00"
+generated: "2019-12-20T17:13:01.214398+02:00"
