@@ -5,6 +5,15 @@ entries:
     appVersion: "1.0"
     created: "2019-12-20T17:13:01.220304+02:00"
     description: A Helm chart for Kubernetes
+    digest: 35cae75886c094004adb2cfee2fec769548806fd0b6519010946e2f247ef4125
+    name: yilu-common
+    urls:
+    - https://yiluhub.github.io/common-chart/yilu-common-0.1.10.tgz
+    version: 0.1.10
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2020-02-26T18:25:40.199819898+01:00"
+    description: A Helm chart for Kubernetes
     digest: 0cd4496c1e4f15c893fb740711f1892939bf296268cc04509e35e32cd5703a07
     name: yilu-common
     urls:

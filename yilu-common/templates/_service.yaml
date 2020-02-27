@@ -9,6 +9,11 @@ spec:
   type: {{ .Values.serviceType }}
   ports:
   - port: {{ .Values.servicePort }}
+    name: http
+{{- if .Values.httpsEnabled }}
+  - port: {{ .Values.httpsPort }}
+    name: https
+{{- end }}
   selector:
     simpletrip: {{ include "common.name" . }}
 {{- end -}}
