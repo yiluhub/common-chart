@@ -1,8 +1,8 @@
 {{- define "common.deployment" -}}
-{{- $common := dict "Values" .Values.common -}} 
-{{- $noCommon := omit .Values "common" -}} 
-{{- $overrides := dict "Values" $noCommon -}} 
-{{- $noValues := omit . "Values" -}} 
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
 {{- with merge $noValues $overrides $common -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -12,6 +12,9 @@ spec:
     metadata:
       labels:
         simpletrip: {{ include "common.name" . }}
+{{- with .Values.labels }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
     spec:
       containers:
       - name: {{ include "common.containerName" . }}
@@ -21,7 +24,7 @@ spec:
 {{  range .Values.arguments }}
 {{ . }}
 {{ end }}
-          ]
+        ]
         ports:
         - containerPort: {{ .Values.servicePort }}
 {{- if .Values.httpsEnabled }}
@@ -81,6 +84,11 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP
+        - name: DD_TRACE_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: datadog-config
+              key: apm.enabled
         - name: {{ .Values.datadogServiceNameEnv}}
           valueFrom:
             fieldRef:
@@ -89,14 +97,11 @@ spec:
         - name: DD_LOGS_INJECTION
           value: 'true'
 {{- end }}
-{{- if .Values.traceAnalyticsEnabled }}
         - name: DD_TRACE_ANALYTICS_ENABLED
-          value: 'true'
-{{- end }}
-{{- if .Values.analyzedSpansEnabled }}
-        - name: DD_APM_ANALYZED_SPANS
-          value: 'true'
-{{- end }}
+          valueFrom:
+            configMapKeyRef:
+              name: datadog-config
+              key: apm.enabled
 {{- if .Values.secretsEnabled }}
         volumeMounts:
         - name: {{ .Values.secretsName }}
