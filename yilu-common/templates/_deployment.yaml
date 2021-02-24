@@ -4,7 +4,7 @@
 {{- $overrides := dict "Values" $noCommon -}}
 {{- $noValues := omit . "Values" -}}
 {{- with merge $noValues $overrides $common -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 {{ template "common.metadata" . }}
 spec:

@@ -1,7 +1,7 @@
 exports:
   data:
     # DEPLOYMENT
-    imageRepository: 432560034976.dkr.ecr.eu-central-1.amazonaws.com/simpletrip
+    imageRepository: 432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub
     imagePullPolicy: Always
     imageTag: latest
 
