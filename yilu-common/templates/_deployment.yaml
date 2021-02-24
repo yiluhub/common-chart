@@ -8,6 +8,9 @@ apiVersion: apps/v1
 kind: Deployment
 {{ template "common.metadata" . }}
 spec:
+  selector:
+    matchLabels:
+      simpletrip: {{ include "common.name" . }}
   template:
     metadata:
       labels:
