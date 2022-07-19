@@ -134,9 +134,6 @@ will generate the code below, please configure your secret accordingly to match 
 
 ## Yilu-Common parameters
 
-
-### Keycloak parameters
-
 | Name                      | Description                                                       | Value                                                     |
 |---------------------------|-------------------------------------------------------------------|-----------------------------------------------------------|
 | `serviceName`             | Service name                                                      | `yilu-common`                                             |
