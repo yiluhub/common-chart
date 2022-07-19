@@ -15,6 +15,7 @@ create and publish docs like this:
 $ helm package yilu-common
 $ mv yilu-common-{version}.tgz docs 
 $ helm repo index docs --url https://yiluhub.github.io/common-chart/
+$ cp yilu-common/README.MD docs/
 $ git add .
 $ git commit -m "version {version} has been created"
 $ git push origin master
