@@ -1,4 +1,3 @@
-{{- define "common.service" -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -6,14 +5,13 @@ metadata:
   labels:
     simpletrip: {{ include "common.name" . }}
 spec:
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.service.type }}
   ports:
-  - port: {{ .Values.servicePort }}
+  - port: {{ .Values.service.port }}
     name: http
-{{- if .Values.httpsEnabled }}
-  - port: {{ .Values.httpsPort }}
+{{- if .Values.service.https.enabled }}
+  - port: {{ .Values.service.https.port }}
     name: https
 {{- end }}
   selector:
     simpletrip: {{ include "common.name" . }}
-{{- end -}}

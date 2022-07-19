@@ -1,9 +1,3 @@
-{{- define "common.deployment" -}}
-{{- $common := dict "Values" .Values.common -}}
-{{- $noCommon := omit .Values "common" -}}
-{{- $overrides := dict "Values" $noCommon -}}
-{{- $noValues := omit . "Values" -}}
-{{- with merge $noValues $overrides $common -}}
 apiVersion: apps/v1
 kind: Deployment
 {{ template "common.metadata" . }}
@@ -21,17 +15,15 @@ spec:
     spec:
       containers:
       - name: {{ include "common.containerName" . }}
-        image: {{ .Values.imageRepository }}/{{ template "common.name" . }}:{{ .Values.imageTag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        args: [
-{{  range .Values.arguments }}
-{{ . }}
-{{ end }}
-        ]
+        image: {{ .Values.image.repository }}/{{ template "common.name" . }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.args}}
+        args: {{- include "common.tplvalues.render" (dict "value" .Values.args "context" $) | nindent 10 }}
+        {{- end}}
         ports:
-        - containerPort: {{ .Values.servicePort }}
-{{- if .Values.httpsEnabled }}
-        - containerPort: {{ .Values.httpsPort }}
+        - containerPort: {{ .Values.service.port }}
+{{- if .Values.service.https.enabled }}
+        - containerPort: {{ .Values.service.https.port }}
 {{- end }}
         envFrom:
         - configMapRef:
@@ -43,19 +35,19 @@ spec:
 {{- end }}
         livenessProbe:
           httpGet:
-            path: {{ .Values.livenessProbePath }}
-            port: {{ .Values.servicePort }}
-          initialDelaySeconds: {{ .Values.livenessProbeInitialDelaySeconds }}
+            path: {{ .Values.livenessProbe.path }}
+            port: {{ .Values.service.port }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
         readinessProbe:
           httpGet:
-            path: {{ .Values.readinessProbePath }}
-            port: {{ .Values.servicePort }}
-          initialDelaySeconds: {{ .Values.readinessProbeInitialDelaySeconds }}
+            path: {{ .Values.readinessProbe.path }}
+            port: {{ .Values.service.port }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
         env:
-{{- with .Values.extraEnv }}
-{{ tpl . $ | indent 8 }}
+{{- if .Values.extraEnv }}
+{{- include "common.tplvalues.render" (dict "value" .Values.extraEnv "context" $) | nindent 8 }}
 {{- end }}
-{{- if .Values.secretsEnabled }}
+{{- if .Values.secrets.enabled }}
         - name: SPRING_CONFIG_ADDITIONAL-LOCATION
           value: file:/etc/secrets/
 {{- end }}
@@ -70,17 +62,17 @@ spec:
               name: spring-boot-cloud
               key: cloud.environment
         - name: SERVER_PORT
-          value: {{ quote .Values.servicePort }}
-{{- if .Values.awsEnabled }}
+          value: {{ quote .Values.service.port }}
+{{- if .Values.aws.enabled }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.awsSecretKeyRefName }}
+              name: {{ .Values.aws.secretKeyRefName }}
               key: key_id
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.awsSecretKeyRefName }}
+              name: {{ .Values.aws.secretKeyRefName }}
               key: secret
 {{- end }}
         - name: DD_AGENT_HOST
@@ -92,11 +84,11 @@ spec:
             configMapKeyRef:
               name: datadog-config
               key: apm.enabled
-        - name: {{ .Values.datadogServiceNameEnv}}
+        - name: {{ .Values.datadog.serviceNameEnv}}
           valueFrom:
             fieldRef:
               fieldPath: metadata.labels['simpletrip']
-{{- if .Values.autoTraceIdInjection }}
+{{- if .Values.datadog.autoTraceIdInjection }}
         - name: DD_LOGS_INJECTION
           value: 'true'
 {{- end }}
@@ -105,15 +97,15 @@ spec:
             configMapKeyRef:
               name: datadog-config
               key: apm.enabled
-{{- if .Values.secretsEnabled }}
+{{- if .Values.secrets.enabled }}
         volumeMounts:
-        - name: {{ .Values.secretsName }}
+        - name: {{ .Values.secrets.name }}
           mountPath: /etc/secrets/
           readOnly: true
       volumes:
-      - name: {{ .Values.secretsName }}
+      - name: {{ .Values.secrets.name }}
         secret:
-          secretName: {{ .Values.secretsName }}
+          secretName: {{ .Values.secrets.name }}
 {{- end }}
       affinity:
         podAntiAffinity:
@@ -132,5 +124,3 @@ spec:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
-{{- end -}}
-{{- end -}}
