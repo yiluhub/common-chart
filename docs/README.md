@@ -132,7 +132,7 @@ will generate the code below, please configure your secret accordingly to match 
 
 ## Parameters
 
-### Keycloak parameters
+## Yilu-Common parameters
 
 | Name                      | Description                                                       | Value                                                     |
 |---------------------------|-------------------------------------------------------------------|-----------------------------------------------------------|
