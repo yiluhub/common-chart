@@ -12,7 +12,7 @@ if echo "${VERSION}" | grep -Eq "^v[0-9]+(\.[0-9]+){2}$"; then
     mv yilu-common-"$VERSION".tgz docs
     helm repo index docs --url https://yiluhub.github.io/common-chart/
     cp yilu-common/README.MD docs/
-    git add .
+    git add yilu-common
     git commit -m "version $VERSION has been created"
     git push origin master
     echo "✅ Published charts"

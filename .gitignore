@@ -32,3 +32,7 @@ nbdist/
 
 ### OS files
 .DS_Store
+
+# helm packages on the root level
+
+*.tgz
