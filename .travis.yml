@@ -21,7 +21,7 @@ jobs:
     install: ./scripts/install_toolchain.sh
 
   - stage: package and publish
-    script: /scripts/publish-chart.sh
+    script: ./scripts/publish_chart.sh
     ##TODO later use gh-pages branch
     if: type != pull_request AND branch = master
     install: ./scripts/install_toolchain.sh
