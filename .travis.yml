@@ -3,7 +3,6 @@ dist: bionic
 
 go: 1.18.x
 
-
 notifications:
   slack:
     rooms:
@@ -11,17 +10,21 @@ notifications:
     on_success: change
     on_failure: change
 
+branches:
+  only:
+    - master
+
 jobs:
   include:
   - stage: lint
     script: helm lint yilu-common --set image.tag="test"
-    install: /scripts/install_toolchain.sh
+    install: ./scripts/install_toolchain.sh
 
   - stage: package and publish
     script: /scripts/publish-chart.sh
     ##TODO later use gh-pages branch
     if: type != pull_request AND branch = master
-    install: /scripts/install_toolchain.sh
+    install: ./scripts/install_toolchain.sh
     env:
     # TRAVIS_GITHUB_TOKEN
     - secure: "FB9gv06DVMzy4074a3jZIkrGRQpsCYUb20JW126mSuzsSgHdBRtEO+qIdLqgFBQ8zp/L8Q1U8dG+XmcX8euDe3FVAuENWMSbd/uEeteP621Gj6lkkzGhqbBzFAXLWpoLXO1a3OpZoKbdCVmXdem+FTgFJReNiD5MJg1tRKkT8+qs5WjRxLxo3ot+4lnf6vpiijF8UBnFOwG9v8XpQFEG0S1+66mjAEcVqaeX1RPlYZ6otJSvMmbGTIde5YymKYfOED2VY5YQ1CA6KtM4ZdrgQ61BTbddTXdFxWm7Z2RJeVj3O7u6VrGuOvbGnfgzQc75LM8jzYRRoyHbA/1scniHap2M/30riSfyG1F5h7J7bweZ1/h2SJhAS7/dRLFcAg5GfhS2wEQeKoLObT8AEmW1Q29kpN2PEuBWhECWVlsoyH/RwLnyGZPbNqManiSbC3Brzno2ghO3LFmNuDt62slFZIN4NPjvx5BQasUUVgD8oQzmdW4D8QdtULa0Vt1JOBgp72ADpmAw8X6HajMeC8VgDEc9Qj5vjYXygrx7kVJaBPqwIFQ9aIBoUpNwbDGn1woSQx8K6V0HA8r97xFW39wnlo2eGGsOBiQsa7xoz1VNroQ19zPoUZsMUm+GclTHsrZFV7UYkFFD7jABLhiK6tLFXKAzaFI0MRp5YxLd2nKsQKM="
