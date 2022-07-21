@@ -6,15 +6,6 @@
 {{- default ( printf "simpletrip-%s" .Values.serviceName ) .Values.containerName | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-
-{{- define "imageRepository" -}}
-{{- default ( printf "simpletrip-%s" .Values.serviceName ) .Values.containerName | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{- define "fullname" }}
-{{.Release.Name | trunc 65 }}
-{{- end }}
-
 {{/* vim: set filetype=mustache: */}}
 {{/*
 Renders a value that contains template.
