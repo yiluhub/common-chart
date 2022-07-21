@@ -1,37 +1,77 @@
-exports:
-  data:
-    # DEPLOYMENT
-    imageRepository: 432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub
-    imagePullPolicy: Always
-    imageTag: latest
+serviceName: "yilu-common"
+containerName: "yilu-common"
 
-    livenessProbeInitialDelaySeconds: 300
-    livenessProbePath: /actuator/health
-    readinessProbeInitialDelaySeconds: 30
-    readinessProbePath: /actuator/health
+image:
+  repository: 432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub
+  pullPolicy: Always
+  tag: ""
 
-    secretsEnabled: false
-    secretsName: default
+args: []
 
-    awsEnabled: false
-    awsSecretKeyRefName: default
+livenessProbe:
+  path: /actuator/health
+  initialDelaySeconds: 300
 
-    mockClientsConfEnabled: false
+readinessProbe:
+  path: /actuator/health
+  initialDelaySeconds: 300
 
-    datadogServiceNameEnv: DD_SERVICE_NAME
-    autoTraceIdInjection: false
-    traceAnalyticsEnabled: false
-    analyzedSpansEnabled: false
+# Inject secrets
+secrets:
+  enabled: false
+  name: ""
 
-    # SERVICE
-    serviceType: NodePort
-    # also used as a deployment port, liveness and readiness port
-    servicePort: 8080
-    httpsEnabled: false
-    httpsPort: 443
+# aws:
+aws:
+  enabled: false
+  secretKeyRefName: ""
 
-    # HorizontalPodAutoscaler
-    hpaTargetCPUUtilizationPercentage: 80
-    hpaMinReplicas: 2
-    hpaMaxReplicas: 10
+mockClientsConfEnabled: false
+
+# extra env to pass to container
+#  - name: SPRING_APPLICATION_NAME
+#    value: flixbus-alternative
+extraEnv: []
+
+#
+#  labels: |
+#    app.kubernetes.io/component: microservice
+#    app.kubernetes.io/part-of: booking
+labels: ""
+
+datadog:
+  serviceNameEnv: DD_SERVICE_NAME
+  autoTraceIdInjection: false
+  traceAnalyticsEnabled: false
+  analyzedSpansEnabled: false
+
+# SERVICE
+service:
+  type: NodePort
+  # also used as a deployment port, liveness and readiness port
+  port: 8080
+  https:
+    enabled: false
+    port: 443
+
+# Autoscaling
+# HorizontalPodAutoscaler
+hpa:
+  targetCPUUtilizationPercentage: 80
+  minReplicas: 2
+  maxReplicas: 10
+
+# CronJob
+job:
+  enabled: false
+  #otherwise uses repository image and tag
+  overrideImageUrl:
+  concurrencyPolicy:
+  schedule:
+  successfulJobsHistoryLimit:
+  failedJobsHistoryLimit:
+  command:
+  args: []
+  extraEnvConfigMapRef:
+
 

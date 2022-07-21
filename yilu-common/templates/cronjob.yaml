@@ -1,10 +1,4 @@
-{{- define "common.cronjob" -}}
-{{- $common := dict "Values" .Values.common -}}
-{{- $noCommon := omit .Values "common" -}}
-{{- $overrides := dict "Values" $noCommon -}}
-{{- $noValues := omit . "Values" -}}
-{{- with merge $noValues $overrides $common -}}
-{{- if .Values.job }}
+{{- if .Values.job.enabled }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -24,41 +18,38 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: {{ include "common.containerName" . }}
-              image: {{- if .Values.job.overrideImageUrl }} {{ .Values.job.overrideImageUrl }} {{ else }} {{ .Values.imageRepository }}/{{ template "common.name" . }}:{{ .Values.imageTag }} {{- end }}
-              imagePullPolicy: {{ .Values.imagePullPolicy }}
+              image: {{- if .Values.job.overrideImageUrl }} {{ .Values.job.overrideImageUrl }} {{ else }} {{ .Values.image.repository }}/{{ template "common.name" . }}:{{ .Values.image.tag }} {{- end }}
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
               {{- if .Values.job.command }}
               command: {{ .Values.job.command }}
               {{- end }}
-              {{- with .Values.job.args }}
-              args:
-{{ toYaml . | indent 16 }}
+              {{- if .Values.job.args }}
+              args: {{- include "common.tplvalues.render" (dict "value" .Values.job.args "context" $) | nindent 16 }}
               {{- end }}
               {{- if .Values.job.extraEnvConfigMapRef }}
               envFrom:
                 - configMapRef:
-                    name: {{ .Values.job.extraEnvConfigMapRef }}
+                    name: {{ .Values.job.c }}
               {{- end }}
               env:
               - name: DD_AGENT_HOST
                 valueFrom:
                   fieldRef:
                     fieldPath: status.hostIP
-              - name: {{ .Values.datadogServiceNameEnv}}
+              - name: {{ .Values.datadog.serviceNameEnv}}
                 valueFrom:
                   fieldRef:
                     fieldPath: metadata.labels['simpletrip']
-                {{- if .Values.autoTraceIdInjection }}
+                {{- if .Values.datadog.autoTraceIdInjection }}
               - name: DD_LOGS_INJECTION
                 value: 'true'
                 {{- end }}
-                {{- if .Values.traceAnalyticsEnabled }}
+                {{- if .Values.datadog.traceAnalyticsEnabled }}
               - name: DD_TRACE_ANALYTICS_ENABLED
                 value: 'true'
                 {{- end }}
-                {{- if .Values.analyzedSpansEnabled }}
+                {{- if .Values.datadog.analyzedSpansEnabled }}
               - name: DD_APM_ANALYZED_SPANS
                 value: 'true'
                 {{- end }}
-{{- end }}
-{{- end }}
 {{- end }}
