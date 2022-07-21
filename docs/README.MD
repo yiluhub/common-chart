@@ -21,7 +21,7 @@ in the requirements.yaml (Helm v2) or in the Chart.yaml(Helm v3) calling import-
 dependencies:
   - name: yilu-common
     version: 0.2.0
-    repository: https://yiluhub.github.io/common-chart//
+    repository: https://yiluhub.github.io/common-chart/
     import-values:
       - data
 ```
@@ -40,8 +40,8 @@ and now it's simplified, import-values is not necessary.
 ```yaml
 dependencies:
   - name: yilu-common
-    version: 0.2.0
-    repository: https://yiluhub.github.io/common-chart//
+    version: 0.3.0
+    repository: https://yiluhub.github.io/common-chart/
 ```
 
 ```yaml
