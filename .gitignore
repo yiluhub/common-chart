@@ -34,5 +34,7 @@ nbdist/
 .DS_Store
 
 # helm packages on the root level
+.*.tar.gz
 
-*.tgz
+# helm binaries
+*.tar.gz
