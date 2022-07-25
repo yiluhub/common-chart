@@ -1,5 +1,5 @@
-serviceName: "yilu-common"
-containerName: "yilu-common"
+serviceName: ""
+containerName: ""
 
 image:
   repository: 432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub
