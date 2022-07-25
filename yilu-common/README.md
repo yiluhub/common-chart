@@ -45,8 +45,8 @@ dependencies:
 ```
 
 ```yaml
-serviceName: "communication-engine"
 yilu-common:
+  serviceName: "communication-engine"
   secretsEnabled: true
   secretsName: communication-engine-secrets
 ```
@@ -65,7 +65,7 @@ $ helm repo add yilu-common https://yiluhub.github.io/common-chart/
 
 # project folder specific
 $ helm dependency update example-service-chart
-$ helm template example-service-chart
+$ helm template example-service-chart --debug --set image.tag="test" --set serviceName="example-service"
 ---
 # Source: example-service-chart/templates/service.yaml
 apiVersion: v1
@@ -136,10 +136,10 @@ will generate the code below, please configure your secret accordingly to match 
 
 | Name                      | Description                                                       | Value                                                     |
 |---------------------------|-------------------------------------------------------------------|-----------------------------------------------------------|
-| `serviceName`             | Service name                                                      | `yilu-common`                                             |
-| `containerName`           | Service container name                                            | `yilu-common`                                             |
+| `serviceName`             | Service name, *mandatory*                                         | ``                                                        |
+| `containerName`           | Service container name                                            | ``                                                        |
 | `image.repository`        | Service image repository                                          | `432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub` |
-| `image.tag`               | Service image tag (immutable tags are recommended)                | `""`                                                      |
+| `image.tag`               | Service image tag (immutable tags are recommended), *mandatory*   | `""`                                                      |
 | `image.pullPolicy`        | Service image pull policy                                         | `Always`                                                  |
 | `secrets.enabled`         | Enable injection of existing secrets                              | `false`                                                   |
 | `secrets.name`            | name of the existing secrets                                      | `""`                                                      |
@@ -156,9 +156,9 @@ will generate the code below, please configure your secret accordingly to match 
 | Name                               | Description                            | Value                    |
 |------------------------------------|----------------------------------------|--------------------------|
 | `service.type`                     | Kubernetes service type                | `NodePort`               |
-| `service.port`                     | Keycloak service HTTP port             | `8080`                   |
-| `service.ports.https.enabled`      | Enable Keycloak service HTTPS port     | `false`                  |
-| `service.ports.https`              | Keycloak service HTTPS port            | `443`                    |
+| `service.port`                     | Kubernetes service HTTP port           | `8080`                   |
+| `service.ports.https.enabled`      | Enable Kubernetes service HTTPS port   | `false`                  |
+| `service.ports.https`              | Kubernetes service HTTPS port          | `443`                    |
 
 
 ### Monitoring

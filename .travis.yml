@@ -17,7 +17,7 @@ branches:
 jobs:
   include:
   - stage: lint
-    script: helm lint yilu-common --set image.tag="test"
+    script: helm lint yilu-common --set image.tag="test" --set serviceName="ci-test"
     install: ./scripts/install_toolchain.sh
 
   - stage: package and publish
