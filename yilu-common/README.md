@@ -161,6 +161,16 @@ will generate the code below, please configure your secret accordingly to match 
 | `service.ports.https`              | Kubernetes service HTTPS port          | `443`                    |
 
 
+### Service Health
+
+| Name                                   | Description                                         | Value              |
+|----------------------------------------|-----------------------------------------------------|--------------------|
+| `livenessProbe.path`                   | LivenessProbe path                                  | `/actuator/health` |
+| `livenessProbe.initialDelaySeconds`    | LivenessProbe initial delay second to make request  | `300`              |
+| `readinessProbe.path`                  | ReadinessProbe path                                 | `/actuator/health` |
+| `readinessProbe.initialDelaySeconds`   | ReadinessProbe initial delay second to make request | `30`               |
+
+
 ### Monitoring
 
 | Name                                 | Description                                | Value             |
