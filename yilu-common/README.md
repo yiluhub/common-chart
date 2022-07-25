@@ -45,8 +45,8 @@ dependencies:
 ```
 
 ```yaml
-serviceName: "communication-engine"
 yilu-common:
+  serviceName: "communication-engine"
   secretsEnabled: true
   secretsName: communication-engine-secrets
 ```
@@ -65,7 +65,7 @@ $ helm repo add yilu-common https://yiluhub.github.io/common-chart/
 
 # project folder specific
 $ helm dependency update example-service-chart
-$ helm template example-service-chart
+$ helm template example-service-chart --debug --set image.tag="test" --set serviceName="example-service"
 ---
 # Source: example-service-chart/templates/service.yaml
 apiVersion: v1
