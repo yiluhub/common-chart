@@ -14,7 +14,7 @@ livenessProbe:
 
 readinessProbe:
   path: /actuator/health
-  initialDelaySeconds: 300
+  initialDelaySeconds: 30
 
 # Inject secrets
 secrets:
