@@ -27,6 +27,3 @@ $ helm repo add yilu-common https://yiluhub.github.io/common-chart/
 ```
 And then yilu-common is going to be available as dependency.
 
-
-## FIXME 
-* add pipeline to automatically lint, publish new versions of chart to github docs
