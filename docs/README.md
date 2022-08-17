@@ -3,16 +3,16 @@
 Yilu-Common is a base chart for all internally used charts.
 
 ## VERSIONS AND BREAKING CHANGES
-This template supports semantic versioning as helm.
+This template supports semantic versioning as helm. 
 
 with the version `0.3.0` breaking changes are introduced and template is not backward compatible.
 *Helm v3 supported only.*  
 Lots of changes on how the templates are configured.
-But generated manifest is still same.
+But generated manifest is still same. 
 
 
 ### Migration from 0.2.z to 0.3.z
-with the new template you don't have to explicitly import values when using the chart.
+with the new template you don't have to explicitly import values when using the chart. 
 
 this is how it used to be with versions 0.2.z
 
@@ -35,7 +35,7 @@ yilu-common:
       secretsName: communication-engine-secrets
 ```
 
-and now it's simplified, import-values is not necessary.
+and now it's simplified, import-values is not necessary. 
 
 ```yaml
 dependencies:
@@ -49,8 +49,8 @@ also notice exports:data is not necessary, parameter names als changed. please r
 yilu-common:
   serviceName: "communication-engine"
   secrets
-  enabled: true
-  name: communication-engine-secrets
+    enabled: true
+    name: communication-engine-secrets
 ```
 
 ## USAGE
@@ -120,16 +120,16 @@ will generate the code below, please configure your secret accordingly to match 
 
 ```yaml
     env:
-      - name: AWS_ACCESS_KEY_ID
-        valueFrom:
-          secretKeyRef:
-            name: aws-secrets
-            key: key_id
-      - name: AWS_SECRET_ACCESS_KEY
-        valueFrom:
-          secretKeyRef:
-            name: aws-secrets
-            key: secret
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: aws-secrets
+          key: key_id
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: aws-secrets
+          key: secret
 ```
 
 ## Parameters
@@ -192,7 +192,7 @@ will generate the code below, please configure your secret accordingly to match 
 | `hpa.maxReplicas`                    | Max number of replicas                       | `10`  |
 
 
-### CronJob
+### CronJob 
 
 
 | Name                             | Description                                        | Value   |
