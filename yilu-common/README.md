@@ -44,11 +44,13 @@ dependencies:
     repository: https://yiluhub.github.io/common-chart/
 ```
 
+also notice exports:data is not necessary, parameter names als changed. please refer to [parameters](#parameters) part of this documentation
 ```yaml
 yilu-common:
   serviceName: "communication-engine"
-  secretsEnabled: true
-  secretsName: communication-engine-secrets
+  secrets
+    enabled: true
+    name: communication-engine-secrets
 ```
 
 ## USAGE
