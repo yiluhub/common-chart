@@ -1,8 +1,0 @@
-{{- define "common.metadata" -}}
-metadata:
-  name: {{ include "common.name" . }}
-  labels:
-{{- with .Values.labels }}
-{{ tpl . $ | indent 4 }}
-{{- end }}
-{{- end -}}

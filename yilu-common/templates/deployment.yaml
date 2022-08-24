@@ -1,6 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
-{{ template "common.metadata" . }}
+metadata:
+  name: {{ include "common.name" . }}
+  labels:
+    simpletrip: {{ include "common.name" . }}
+    {{- if .Values.labels }}
+    {{- include "common.tplvalues.render" (dict "value" .Values.labels "context" $) | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -9,11 +15,9 @@ spec:
     metadata:
       labels:
         simpletrip: {{ include "common.name" . }}
-{{- if .Values.labels }}
-{{- with .Values.labels }}
-{{ tpl . $ | indent 8 }}
-{{- end }}
-{{- end }}
+        {{- if .Values.labels }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.labels "context" $) | nindent 8 }}
+        {{- end }}
     spec:
       containers:
       - name: {{ include "common.containerName" . }}
