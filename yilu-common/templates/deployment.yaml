@@ -9,8 +9,10 @@ spec:
     metadata:
       labels:
         simpletrip: {{ include "common.name" . }}
+{{- if .Values.labels }}
 {{- with .Values.labels }}
 {{ tpl . $ | indent 8 }}
+{{- end }}
 {{- end }}
     spec:
       containers:
