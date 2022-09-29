@@ -1,25 +1,9 @@
 # Common chart
 
-This is an example charts repository.
+This repository contains helm charts for yilu. 
 
-### How It Works
-
-I set up GitHub Pages to point to the `docs` folder. From there, I can
-create and publish docs like this:
-
-
-- Increase the `version` in `Chart.yml` file 
-- Run the commands shown below
-
-```console
-$ helm package yilu-common
-$ mv yilu-common-{version}.tgz docs 
-$ helm repo index docs --url https://yiluhub.github.io/common-chart/
-$ cp yilu-common/README.MD docs/
-$ git add .
-$ git commit -m "version {version} has been created"
-$ git push origin master
-```
+## Yilu-Common
+Base template to create k8s deployments. For more info check [yilu-common/README.md](yilu-common/README.md)
 
 From the environment that you work on, You can do  
 ```

@@ -57,33 +57,180 @@ yilu-common:
 
 ### How to use
 
+
+You can use `helm create .` then helm will automatically creates necessary folders.
 ```bash
-$ pwd
-/Projects/yilu/example-service
+~/tmp/demo-service$ helm create demo-service-chart
+Creating demo-service
+/tmp/$ cd demo-service-chart && ls -l
+total 16
+-rw-r--r--   1 guneriu  wheel   1.1K Sep 29 14:39 Chart.yaml
+drwxr-xr-x   2 guneriu  wheel    64B Sep 29 14:39 charts
+drwxr-xr-x  10 guneriu  wheel   320B Sep 29 14:39 templates
+-rw-r--r--   1 guneriu  wheel   1.8K Sep 29 14:39 values.yaml
 
-# globally configured (run once after Helm install)
-$ helm init --client-only
-$ helm repo add yilu-common https://yiluhub.github.io/common-chart/
+```
+Helm generated a bunch of files inside the templates folder \
+but we won't need them for common chart. Because common-chart will generate \
+all necessary files for the deployment. Also clean the variables from values.yaml
 
-# project folder specific
-$ helm dependency update example-service-chart
-$ helm template example-service-chart --debug --set image.tag="test" --set serviceName="example-service"
----
-# Source: example-service-chart/templates/service.yaml
+```bash
+
+~/tmp/demo-service/demo-service-chart$ rm -rf /templates
+~/tmp/demo-service/demo-service-chart$ echo "" > values.yaml
+
+```
+
+Add yilu-common repo to your helm repos list.
+```bash
+~/tmp/demo-service$ helm repo add yilu-common https://yiluhub.github.io/common-chart/
+```
+Now let's add yilu-common as a dependency, append the lines to Chart.yaml
+```yaml
+dependencies:
+  - name: yilu-common
+    version: 0.3.0
+    repository: https://yiluhub.github.io/common-chart/
+```
+
+Update dependency to fetch the chart
+
+```bash
+ ~/tmp/demo-service$ helm dependency update demo-service-chart
+Hang tight while we grab the latest from your chart repositories...
+...Unable to get an update from the "local" chart repository (http://127.0.0.1:8879/charts):
+	Get "http://127.0.0.1:8879/charts/index.yaml": dial tcp 127.0.0.1:8879: connect: connection refused
+...Successfully got an update from the "kubernetes" chart repository
+...Successfully got an update from the "yilu-common" chart repository
+...Successfully got an update from the "hashicorp" chart repository
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈Happy Helming!⎈
+Saving 1 charts
+Downloading yilu-common from repo https://yiluhub.github.io/common-chart/
+Deleting outdated charts
+```  
+
+Ideally, you would pass the params via values.yaml but let's test if things are fine until now.
+You should see manifest output. 
+```bash
+ ~/tmp/demo-service$ helm template  demo-service-chart --debug --set yilu-common.image.tag="test" --set serviceName="demo-service"
+ 
+ ---
+# Source: demo-service/charts/yilu-common/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: example-service
+  name:
   labels:
-    simpletrip: example-service
+    simpletrip:
 spec:
   type: NodePort
   ports:
   - port: 8080
+    name: http
   selector:
-    simpletrip: example-service
+    simpletrip:
 ---
+# Source: demo-service/charts/yilu-common/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:
+  labels:
+    simpletrip:
+spec:
+  selector:
+    matchLabels:
+      simpletrip:
+  template:
+    metadata:
+      labels:
+        simpletrip:
+    spec:
+      containers:
+      - name: simpletrip
+        image: 432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub/:test
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: spring-boot-cloud
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 300
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+        env:
+        - name: SPRING_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: spring-boot-cloud
+              key: spring.environment
+        - name: CLOUD_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: spring-boot-cloud
+              key: cloud.environment
+        - name: SERVER_PORT
+          value: "8080"
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: DD_TRACE_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: datadog-config
+              key: apm.enabled
+        - name: DD_SERVICE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['simpletrip']
+        - name: DD_TRACE_ANALYTICS_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: datadog-config
+              key: apm.enabled
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: simpletrip
+                operator: In
+                values:
+                -
+            topologyKey: kubernetes.io/hostname
+      nodeSelector:
+        role: general-purpose
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+---
+# Source: demo-service/charts/yilu-common/templates/hpa.yaml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name:
+spec:
+  minReplicas: 2
+  maxReplicas: 10
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name:
+  targetCPUUtilizationPercentage: 80
 ```
+
+---
 
 #### Example CronJob configuration
 ```yaml
