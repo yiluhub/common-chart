@@ -120,36 +120,36 @@ You should see manifest output.
 apiVersion: v1
 kind: Service
 metadata:
-  name:
+  name: demo-service
   labels:
-    simpletrip:
+    simpletrip: demo-service
 spec:
   type: NodePort
   ports:
   - port: 8080
     name: http
   selector:
-    simpletrip:
+    simpletrip: demo-service
 ---
 # Source: demo-service/charts/yilu-common/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name:
+  name: demo-service
   labels:
-    simpletrip:
+    simpletrip: demo-service
 spec:
   selector:
     matchLabels:
-      simpletrip:
+      simpletrip: demo-service
   template:
     metadata:
       labels:
-        simpletrip:
+        simpletrip: demo-service
     spec:
       containers:
       - name: simpletrip
-        image: 432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub/:test
+        image: 432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub/demo-service:test
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -219,14 +219,14 @@ spec:
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name:
+  name: demo-service
 spec:
   minReplicas: 2
   maxReplicas: 10
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name:
+    name: demo-service
   targetCPUUtilizationPercentage: 80
 ```
 
