@@ -197,6 +197,11 @@ spec:
             configMapKeyRef:
               name: datadog-config
               key: apm.enabled
+        - name: DD_LOGS_INJECTION
+          valueFrom:
+            configMapKeyRef:
+              name: datadog-config
+              key: apm.enabled
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -322,12 +327,10 @@ will generate the code below, please configure your secret accordingly to match 
 
 ### Monitoring
 
-| Name                                 | Description                                | Value             |
-|--------------------------------------|--------------------------------------------|-------------------|
-| `datadog.serviceNameEnv`             | Environment variable name for service name | `DD_SERVICE_NAME` |
-| `datadog.autoTraceIdInjection`       | enable trace id injection                  | `false`           |
-| `datadog.traceAnalyticsEnabled`      | Enable trace analytics                     | `false`           |
-| `datadog.analyzedSpansEnabled.https` | Enable span analyze                        | `false`           |
+| Name                             | Description                                | Value             |
+|----------------------------------|--------------------------------------------|-------------------|
+| `datadog.serviceNameEnv`         | Environment variable name for service name | `DD_SERVICE_NAME` |
+| `datadog.analyzedSpansEnabled`   | Enable span analyze                        | `false`           |
 
 
 ### AutoScaling

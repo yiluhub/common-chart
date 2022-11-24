@@ -40,16 +40,18 @@ spec:
                 valueFrom:
                   fieldRef:
                     fieldPath: metadata.labels['simpletrip']
-                {{- if .Values.datadog.autoTraceIdInjection }}
               - name: DD_LOGS_INJECTION
-                value: 'true'
-                {{- end }}
-                {{- if .Values.datadog.traceAnalyticsEnabled }}
+                valueFrom:
+                  configMapKeyRef:
+                    name: datadog-config
+                    key: apm.enabled
               - name: DD_TRACE_ANALYTICS_ENABLED
-                value: 'true'
-                {{- end }}
-                {{- if .Values.datadog.analyzedSpansEnabled }}
+                valueFrom:
+                  configMapKeyRef:
+                    name: datadog-config
+                    key: apm.enabled
+              {{- if .Values.datadog.analyzedSpansEnabled }}
               - name: DD_APM_ANALYZED_SPANS
                 value: 'true'
-                {{- end }}
+              {{- end }}
 {{- end }}
