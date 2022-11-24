@@ -94,15 +94,20 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.labels['simpletrip']
-{{- if .Values.datadog.autoTraceIdInjection }}
         - name: DD_LOGS_INJECTION
-          value: 'true'
-{{- end }}
+          valueFrom:
+            configMapKeyRef:
+              name: datadog-config
+              key: apm.enabled
         - name: DD_TRACE_ANALYTICS_ENABLED
           valueFrom:
             configMapKeyRef:
               name: datadog-config
               key: apm.enabled
+{{- if .Values.datadog.analyzedSpansEnabled }}
+        - name: DD_APM_ANALYZED_SPANS
+          value: 'true'
+{{- end }}
 {{- if .Values.secrets.enabled }}
         volumeMounts:
         - name: {{ .Values.secrets.name }}

@@ -37,12 +37,10 @@ extraEnv: []
 #  labels: |
 #    app.kubernetes.io/component: microservice
 #    app.kubernetes.io/part-of: booking
-labels: 
+labels: {}
 
 datadog:
   serviceNameEnv: DD_SERVICE_NAME
-  autoTraceIdInjection: false
-  traceAnalyticsEnabled: false
   analyzedSpansEnabled: false
 
 # SERVICE
