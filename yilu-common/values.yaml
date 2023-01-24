@@ -20,6 +20,13 @@ readinessProbe:
 secrets:
   enabled: false
   name: ""
+  refreshInterval: 24h
+  data:
+    secretKey: application.yaml
+    remoteRef:
+      parentKey: kv/services/secrets/data
+      property: application.yaml
+      decodingStrategy: Base64
 
 # aws:
 aws:
