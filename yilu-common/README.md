@@ -284,6 +284,13 @@ will generate the code below, please configure your secret accordingly to match 
           key: secret
 ```
 
+### Secrets Configuration
+We have enabled Kubernetes & Vault secret integration in chart version 0.4.0 and above. 
+More details can be found [here](https://yiluts.atlassian.net/wiki/spaces/YILU/pages/2463694899/HCP+Vault+-+Kubernetes+Integration)
+
+When you enable secrets, `secrets.enabled`, Kubernetes will fetch the secret from Vault. Thus make sure that corresponding secret exists in Vault. More details around adding/ updating secrets in Vault can be found [here](https://github.com/yiluhub/vault-service-secret) 
+
+
 ## Parameters
 
 ## Yilu-Common parameters

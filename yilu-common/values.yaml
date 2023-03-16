@@ -20,7 +20,7 @@ readinessProbe:
 secrets:
   enabled: false
   name: ""
-  refreshInterval: 24h
+  refreshInterval: 1h
   data:
     secretKey: application.yaml
     remoteRef:
