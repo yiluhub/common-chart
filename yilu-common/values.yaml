@@ -79,4 +79,6 @@ job:
   args: []
   extraEnvConfigMapRef:
 
-
+# Deployment
+deployment:
+  revisionHistoryLimit: 3
