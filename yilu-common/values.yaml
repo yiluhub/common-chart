@@ -81,4 +81,4 @@ job:
 
 # Deployment
 deployment:
-  revisionHistoryLimit: 3
+  revisionHistoryLimit: 5
