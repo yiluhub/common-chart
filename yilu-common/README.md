@@ -295,21 +295,22 @@ When you enable secrets, `secrets.enabled`, Kubernetes will fetch the secret fro
 
 ## Yilu-Common parameters
 
-| Name                      | Description                                                       | Value                                                     |
-|---------------------------|-------------------------------------------------------------------|-----------------------------------------------------------|
-| `serviceName`             | Service name, *mandatory*                                         | ``                                                        |
-| `containerName`           | Service container name                                            | ``                                                        |
-| `image.repository`        | Service image repository                                          | `432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub` |
-| `image.tag`               | Service image tag (immutable tags are recommended), *mandatory*   | `""`                                                      |
-| `image.pullPolicy`        | Service image pull policy                                         | `Always`                                                  |
-| `secrets.enabled`         | Enable injection of existing secrets                              | `false`                                                   |
-| `secrets.name`            | name of the existing secrets                                      | `""`                                                      |
-| `aws.enabled`             | Enable injection of AWS credentials via secrets                   | `false`                                                   |
-| `aws.secretKeyRefName`    | name of the existing secrets contains AWS credentials             | `""`                                                      |
-| `args`                    | Override default container args (useful when using custom images) | `[]`                                                      |
-| `extraEnv`                | Extra environment variables to be set on the container            | `[]`                                                      |
-| `mockClientsConfEnabled`  | Setup environment variables for Mocking (useful for dev)          | `false`                                                   |
-| `labels`                  | labels to add to container                                        | `""`                                                      |
+| Name                     | Description                                                       | Value                                                     |
+|--------------------------|-------------------------------------------------------------------|-----------------------------------------------------------|
+| `serviceName`            | Service name, *mandatory*                                         | ``                                                        |
+| `containerName`          | Service container name                                            | ``                                                        |
+| `image.repository`       | Service image repository                                          | `432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub` |
+| `image.tag`              | Service image tag (immutable tags are recommended), *mandatory*   | `""`                                                      |
+| `image.pullPolicy`       | Service image pull policy                                         | `Always`                                                  |
+| `secrets.enabled`        | Enable injection of existing secrets                              | `false`                                                   |
+| `secrets.name`           | name of the existing secrets                                      | `""`                                                      |
+| `aws.enabled`            | Enable injection of AWS credentials via secrets                   | `false`                                                   |
+| `aws.secretKeyRefName`   | name of the existing secrets contains AWS credentials             | `""`                                                      |
+| `args`                   | Override default container args (useful when using custom images) | `[]`                                                      |
+| `extraEnv`               | Extra environment variables to be set on the container            | `[]`                                                      |
+| `mockClientsConfEnabled` | Setup environment variables for Mocking (useful for dev)          | `false`                                                   |
+| `labels`                 | labels to add to container                                        | `""`                                                      |
+| `resources`              | add resource request                                              | `"check readme file"`                                     |
 
 
 ### Exposure parameters

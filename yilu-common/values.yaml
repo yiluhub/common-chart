@@ -82,3 +82,13 @@ job:
 # Deployment
 deployment:
   revisionHistoryLimit: 5
+
+# pass resource requests
+# resources: |
+#   limits:
+#     cpu: "1"
+#     memory: 512Mi
+#   requests:
+#     cpu: "1"
+#     memory: 512Mi
+resources:
