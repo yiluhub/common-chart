@@ -17,7 +17,7 @@ spec:
       labels:
         simpletrip: {{ include "common.name" . }}
         app.kubernetes.io/name: {{ include "common.name" . }}
-        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+        app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
         {{- if .Values.labels }}
         {{- include "common.tplvalues.render" (dict "value" .Values.labels "context" $) | nindent 8 }}
         {{- end }}
