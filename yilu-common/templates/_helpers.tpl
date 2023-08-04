@@ -19,3 +19,11 @@ Usage:
         {{- tpl (.value | toYaml) .context }}
     {{- end }}
 {{- end -}}
+
+{{- define "common.repository" -}}
+{{- if eq .Values.amp "true" -}}
+{{- "{{ .Values.image.repository }}/amp" -}}
+{{- else -}}
+{{- .Values.image.repository -}}
+{{- end -}}
+{{- end -}}
