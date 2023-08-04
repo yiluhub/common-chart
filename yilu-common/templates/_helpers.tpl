@@ -21,8 +21,8 @@ Usage:
 {{- end -}}
 
 {{- define "common.repository" -}}
-{{- if eq .Values.amp "true" -}}
-{{- .Values.image.repository -}}{{- "/amp" -}}
+{{- if .Values.servicePrefix -}}
+{{- .Values.image.repository -}}{{- .Values.servicePrefix -}}
 {{- else -}}
 {{- .Values.image.repository -}}
 {{- end -}}
