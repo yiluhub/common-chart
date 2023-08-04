@@ -22,7 +22,7 @@ Usage:
 
 {{- define "common.repository" -}}
 {{- if eq .Values.amp "true" -}}
-{{- "{{ .Values.image.repository }}/amp" -}}
+{{- .Values.image.repository -}}{{- "/amp" -}}
 {{- else -}}
 {{- .Values.image.repository -}}
 {{- end -}}
