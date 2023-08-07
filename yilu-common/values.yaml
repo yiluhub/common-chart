@@ -1,5 +1,4 @@
 serviceName: ""
-servicePrefix: ""
 containerName: ""
 
 image:
