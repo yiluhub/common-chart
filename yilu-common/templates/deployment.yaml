@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: {{ include "common.containerName" . }}
-        image: {{ .Values.image.repository }}/{{ template "common.name" . }}:{{ .Values.image.tag }}
+        image: {{ include "common.repository" . }}/{{ template "common.name" . }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if .Values.args }}
         args: {{- include "common.tplvalues.render" (dict "value" .Values.args "context" $) | nindent 10 }}
