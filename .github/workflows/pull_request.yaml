@@ -1,0 +1,26 @@
+name: Pull Request Workflow
+run-name: ${{ github.actor }} has triggered a Pull Request Workflow! 🚀
+
+on:
+  pull_request:
+    branches:
+      - 'master'
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-code-analysis:
+    name: Test Formatting
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Toolchain
+        run: ./scripts/install_toolchain.sh
+
+      - name: Run linter
+        run: helm lint yilu-common --set image.tag="test" --set serviceName="ci-test"
