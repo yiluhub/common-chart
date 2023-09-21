@@ -18,15 +18,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Get Branch Name
-        id: branch
-        run: echo "branch=${{ github.ref }}" >> $GITHUB_OUTPUT
-
-      - name: Extract Branch Name
-        run: echo "Branch name is ${GITHUB_REF#refs/pull/}"
-        env:
-          GITHUB_REF: ${{ steps.branch.outputs.branch }}
-
       - name: Install Toolchain
         run: ./scripts/install_toolchain.sh
 

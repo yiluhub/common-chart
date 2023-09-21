@@ -20,8 +20,13 @@ jobs:
       - name: Run linter
         run: helm lint yilu-common --set image.tag="test" --set serviceName="ci-test"
 
+      - name: Extract Branch Name
+        id: extract_branch_name
+        run: echo "BRANCH_NAME=${{ github.ref#refs/heads/ }}" >> $GITHUB_OUTPUT
+
       - name: Publish
         run: ./scripts/publish_chart.sh
         env:
           TRAVIS_GITHUB_TOKEN: ${{ secrets.TRAVIS_GITHUB_TOKEN }}
           CI_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          CI_BRANCH: ${{ steps.extract_branch_name.outputs.BRANCH_NAME }}
