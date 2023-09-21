@@ -23,3 +23,6 @@ jobs:
 
       - name: Run linter
         run: helm lint yilu-common --set image.tag="test" --set serviceName="ci-test"
+
+      - name: Check Branch
+        run: echo "Branch: ${{ github.ref }}"
