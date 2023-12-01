@@ -3,9 +3,9 @@ set -eo pipefail
 
 VERSION=$(grep 'version: [0-9]\+\.[0-9]\+\.[0-9]\+' "yilu-common/Chart.yaml" | cut -d':' -f2 | tr -d '[:space:]')
 TRAVIS_GITHUB_TOKEN_USERNAME="Travis-CI"
-# from travis-ci
-BRANCH_NAME=$TRAVIS_BRANCH
-LAST_COMMIT_MESSAGE=$TRAVIS_COMMIT_MESSAGE
+# from the CI
+BRANCH_NAME=$CI_BRANCH
+LAST_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE
 
 if echo "${VERSION}" | grep -Eq "^[0-9]+(\.[0-9]+){2}$"; then
   if echo "${LAST_COMMIT_MESSAGE}" | grep -Eq "version [0-9]+(\.[0-9]+){2} has been created"; then
