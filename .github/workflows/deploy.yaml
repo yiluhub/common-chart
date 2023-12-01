@@ -22,7 +22,7 @@ jobs:
 
       - name: Extract Branch Name
         id: extract_branch_name
-        run: echo "BRANCH_NAME=${GITHUB_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
       - name: Publish
         run: ./scripts/publish_chart.sh
