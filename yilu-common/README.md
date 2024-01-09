@@ -44,11 +44,11 @@ dependencies:
     repository: https://yiluhub.github.io/common-chart/
 ```
 
-also notice exports:data is not necessary, parameter names als changed. please refer to [parameters](#parameters) part of this documentation
+also notice exports:data is not necessary, parameter names also changed. please refer to [parameters](#parameters) part of this documentation
 ```yaml
 yilu-common:
   serviceName: "communication-engine"
-  secrets
+  secrets:
     enabled: true
     name: communication-engine-secrets
 ```
@@ -238,6 +238,7 @@ spec:
 ---
 
 #### Example CronJob configuration
+
 ```yaml
 serviceName: "whatever-name"
 containerName: "whatever-container-name"
@@ -260,7 +261,6 @@ job:
 ### AWS Configuration
 
 Configuring AWS access for your app is done via injecting AWS credentials to container
-
 
 ```yaml
 aws:
@@ -285,11 +285,40 @@ will generate the code below, please configure your secret accordingly to match 
 ```
 
 ### Secrets Configuration
-We have enabled Kubernetes & Vault secret integration in chart version 0.4.0 and above. 
+
+We have enabled Kubernetes & Vault secret integration in chart version 0.4.0 and above.
 More details can be found [here](https://yiluts.atlassian.net/wiki/spaces/YILU/pages/2463694899/HCP+Vault+-+Kubernetes+Integration)
 
-When you enable secrets, `secrets.enabled`, Kubernetes will fetch the secret from Vault. Thus make sure that corresponding secret exists in Vault. More details around adding/ updating secrets in Vault can be found [here](https://github.com/yiluhub/vault-service-secret) 
+When you enable secrets, `secrets.enabled`, Kubernetes will fetch the secret from Vault. Thus make sure that corresponding secret exists in Vault. More details around adding/ updating secrets in Vault can be found [here](https://github.com/yiluhub/vault-service-secret)
 
+### Adding dynamic secrets with vault secrets operator
+
+To add a new dynamic secret fetched from vault (dev, staging or prod) simply add the values to the fields in the secrets stanza like shown below:
+
+```yaml
+yilu-common:
+  secrets:
+    enabled: true
+    name: "some name here"
+    vault:
+      awsPermissionsRole: "role with aws permissions that are needed"
+```
+
+```NOTE: This secrets stanza is the same one used by the external secrets operator. This will remain the same for now until we fully migrate to the new vault secrets operator to avoid confusion.
+```
+
+The main fields to focus on are:
+
+- yilu-common.secrets.vault.awsPermissionsRole
+- yilu-common.secrets.name
+
+These are the ones that are & should be unique to each service. The rest are defaults & are the same for all services.
+
+- yilu-common.secrets.enabled
+- yilu-common.secrets.vault.namespace
+- yilu-common.secrets.vault.authRef
+- yilu-common.secrets.vault.secretsEngineMount
+- yilu-common.secrets.vault.vaultSecretsOperatorName
 
 ## Parameters
 
