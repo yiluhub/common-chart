@@ -28,6 +28,13 @@ secrets:
       parentKey: kv/services/secrets/data
       property: application.yaml
       decodingStrategy: Base64
+  vault:
+    namespace: admin/yiluhub/
+    # authRef is the name of the Vault Auth resource deployed as part of the vault secrets operator. The value is namespace prefixed
+    authRef: vault-secrets-operator/default
+    secretsEngineMount: aws/secret-engine
+    awsPermissionsRole: ""
+    vaultSecretsOperatorName: vault-secrets-operator
 
 # aws:
 aws:
