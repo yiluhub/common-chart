@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} has triggered a Pull Request Workflow! 🚀
 
 on:
   pull_request:
-    branches: [master]
+    branches: [main]
 
 concurrency:
   group: ci-${{ github.ref }}

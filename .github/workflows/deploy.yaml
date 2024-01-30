@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} has triggered a Deploy Workflow! 🚀
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   package-and-publish:
