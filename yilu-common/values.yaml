@@ -19,6 +19,26 @@ readinessProbe:
 
 # Inject secrets
 secrets:
+  vault:
+    namespace: admin/yiluhub/
+    vaultSecretsOperatorName: vault-secrets-operator
+    authRef: vault-secrets-operator/default
+    # authRef is the name of the Vault Auth resource deployed as part of the vault secrets operator. The value is namespace prefixed
+  dynamicSecrets:
+    enabled: false
+    secretsEngineMountPath: aws/secret-engine
+    secrets:
+      - name: ""
+        type: aws
+        dynamicPermissionsRole: ""
+  staticSecrets:
+    enabled: false
+    secretsEngineMountPath: kv/services/secrets
+    refreshInterval: 1h
+    secretName: ""
+    secretPath: ""
+    version: 1
+    secretKeys: []
   enabled: false
   name: ""
   refreshInterval: 1h
@@ -28,13 +48,6 @@ secrets:
       parentKey: kv/services/secrets/data
       property: application.yaml
       decodingStrategy: Base64
-  vault:
-    namespace: admin/yiluhub/
-    # authRef is the name of the Vault Auth resource deployed as part of the vault secrets operator. The value is namespace prefixed
-    authRef: vault-secrets-operator/default
-    secretsEngineMount: aws/secret-engine
-    awsPermissionsRole: ""
-    vaultSecretsOperatorName: vault-secrets-operator
 
 # aws:
 aws:

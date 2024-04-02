@@ -1,3 +1,5 @@
+{{- $secretName := .Values.secrets.staticSecrets.secretName }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -86,6 +88,43 @@ spec:
             secretKeyRef:
               name: {{ .Values.aws.secretKeyRefName }}
               key: secret
+{{- end }}
+{{- if .Values.secrets.dynamicSecrets.enabled }}
+{{- range .Values.secrets.dynamicSecrets.secrets }}
+{{- if eq .type "aws" }}
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .name }}
+              key: access_key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .name }}
+              key: secret_key
+{{- end }}
+{{- if eq .type "database" }}
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .name }}
+              key: username
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .name }}
+              key: password
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if .Values.secrets.staticSecrets.enabled }}
+{{- range .Values.secrets.staticSecrets.secretKeys }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secretName }}
+              key: {{ . }}
+{{- end }}
 {{- end }}
         - name: DD_AGENT_HOST
           valueFrom:
