@@ -3,20 +3,22 @@
 Yilu-Common is a base chart for all internally used charts.
 
 ## VERSIONS AND BREAKING CHANGES
-This template supports semantic versioning as helm. 
+
+This template supports semantic versioning as helm.
 
 with the version `0.3.0` breaking changes are introduced and template is not backward compatible.
-*Helm v3 supported only.*  
+*Helm v3 supported only.*
 Lots of changes on how the templates are configured.
-But generated manifest is still same. 
-
+But generated manifest is still same.
 
 ### Migration from 0.2.z to 0.3.z
+
 with the new template you don't have to explicitly import values when using the chart. 
 
 this is how it used to be with versions 0.2.z
 
 in the requirements.yaml (Helm v2) or in the Chart.yaml(Helm v3) calling import-values block is mandatory
+
 ```yaml
 dependencies:
   - name: yilu-common
@@ -35,7 +37,7 @@ yilu-common:
       secretsName: communication-engine-secrets
 ```
 
-and now it's simplified, import-values is not necessary. 
+and now it's simplified, import-values is not necessary.
 
 ```yaml
 dependencies:
@@ -45,6 +47,7 @@ dependencies:
 ```
 
 also notice exports:data is not necessary, parameter names also changed. please refer to [parameters](#parameters) part of this documentation
+
 ```yaml
 yilu-common:
   serviceName: "communication-engine"
@@ -57,8 +60,8 @@ yilu-common:
 
 ### How to use
 
-
 You can use `helm create .` then helm will automatically creates necessary folders.
+
 ```bash
 ~/tmp/demo-service$ helm create demo-service-chart
 Creating demo-service
@@ -70,6 +73,7 @@ drwxr-xr-x  10 guneriu  wheel   320B Sep 29 14:39 templates
 -rw-r--r--   1 guneriu  wheel   1.8K Sep 29 14:39 values.yaml
 
 ```
+
 Helm generated a bunch of files inside the templates folder \
 but we won't need them for common chart. Because common-chart will generate \
 all necessary files for the deployment. Also clean the variables from values.yaml
@@ -291,34 +295,42 @@ More details can be found [here](https://yiluts.atlassian.net/wiki/spaces/YILU/p
 
 When you enable secrets, `secrets.enabled`, Kubernetes will fetch the secret from Vault. Thus make sure that corresponding secret exists in Vault. More details around adding/ updating secrets in Vault can be found [here](https://github.com/yiluhub/vault-service-secret)
 
-### Adding dynamic secrets with vault secrets operator
+### Adding dynamic and static secrets with vault secrets operator
 
-To add a new dynamic secret fetched from vault (dev, staging or prod) simply add the values to the fields in the secrets stanza like shown below:
+To enable the `dynamicSecrets`, you need to set `enabled` as true, provide a valid `mountPath`, `awsPermissionsRolePath`.
+
+To enable the `staticSecrets`, you need to set `enabled` as true, provide a valid `mountPath`, `secretName`, `secretPath`, `secretKeys`
+
+Shown below is an example of how to set this up:
 
 ```yaml
 yilu-common:
   secrets:
-    enabled: true
-    name: "some name here"
-    vault:
-      awsPermissionsRole: "role with aws permissions that are needed"
+    dynamicSecrets:
+      enabled: false
+      mountPath: "<some path here>" # example: aws/secret-engines"
+      secrets:
+        - name: "some-name" # something like worldshop
+          type: "type of dynamic secrets engine" # example: aws
+          awsPermissionsRolePath: "vault role path here>" # example: creds/service-read"
+    staticSecrets:
+      enabled: false
+      mountPath: "<some path here>" # example: kv/services/secrets
+      refreshInterval: 1h
+      secretName: "<some name here"  # example: Yilu-static-secret
+      secretPath: "<some secret path here>" # example: worldshop
+      version: 1
+      secretKeys:
+      - KEY1
+      - KEY2
 ```
+
+The `secretKeys` are the ones that will be assigned to env vars for the deployment, they also match the keys in vault for the specific secret
+
+To know which exact `awsPermissionsRolePath` value to use for a given environment, you need to check the respective vault for the given environment under the `aws/secrets-engine` for AWS, and among the roles, select one with the permissions your application needs.
 
 ```NOTE: This secrets stanza is the same one used by the external secrets operator. This will remain the same for now until we fully migrate to the new vault secrets operator to avoid confusion.
 ```
-
-The main fields to focus on are:
-
-- yilu-common.secrets.vault.awsPermissionsRole
-- yilu-common.secrets.name
-
-These are the ones that are & should be unique to each service. The rest are defaults & are the same for all services.
-
-- yilu-common.secrets.enabled
-- yilu-common.secrets.vault.namespace
-- yilu-common.secrets.vault.authRef
-- yilu-common.secrets.vault.secretsEngineMount
-- yilu-common.secrets.vault.vaultSecretsOperatorName
 
 ## Parameters
 
@@ -341,7 +353,6 @@ These are the ones that are & should be unique to each service. The rest are def
 | `labels`                 | labels to add to container                                        | `""`                                                      |
 | `resources`              | add resource request                                              | `"check readme file"`                                     |
 
-
 ### Exposure parameters
 
 | Name                               | Description                            | Value                    |
@@ -350,7 +361,6 @@ These are the ones that are & should be unique to each service. The rest are def
 | `service.port`                     | Kubernetes service HTTP port           | `8080`                   |
 | `service.ports.https.enabled`      | Enable Kubernetes service HTTPS port   | `false`                  |
 | `service.ports.https`              | Kubernetes service HTTPS port          | `443`                    |
-
 
 ### Service Health
 
@@ -361,14 +371,12 @@ These are the ones that are & should be unique to each service. The rest are def
 | `readinessProbe.path`                  | ReadinessProbe path                                 | `/actuator/health` |
 | `readinessProbe.initialDelaySeconds`   | ReadinessProbe initial delay second to make request | `30`               |
 
-
 ### Monitoring
 
 | Name                             | Description                                | Value             |
 |----------------------------------|--------------------------------------------|-------------------|
 | `datadog.serviceNameEnv`         | Environment variable name for service name | `DD_SERVICE_NAME` |
 | `datadog.analyzedSpansEnabled`   | Enable span analyze                        | `false`           |
-
 
 ### AutoScaling
 
@@ -378,9 +386,7 @@ These are the ones that are & should be unique to each service. The rest are def
 | `hpa.minReplicas`                    | Min number of replicas                       | `2`   |
 | `hpa.maxReplicas`                    | Max number of replicas                       | `10`  |
 
-
-### CronJob 
-
+### CronJob
 
 | Name                             | Description                                        | Value   |
 |----------------------------------|----------------------------------------------------|---------|
