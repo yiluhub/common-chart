@@ -2,7 +2,7 @@
 set -eo pipefail
 
 VERSION=$(grep 'version: [0-9]\+\.[0-9]\+\.[0-9]\+' "yilu-common/Chart.yaml" | cut -d':' -f2 | tr -d '[:space:]')
-TRAVIS_GITHUB_TOKEN_USERNAME="Travis-CI"
+TRAVIS_GITHUB_TOKEN_USERNAME="yilu-travis-ci"
 # from the CI
 BRANCH_NAME=$CI_BRANCH
 LAST_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE
