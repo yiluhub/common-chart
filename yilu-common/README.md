@@ -399,3 +399,34 @@ To know which exact `awsPermissionsRolePath` value to use for a given environmen
 | `job.command`                    | Command to run on the container                    | `""`    |
 | `job.args`                       | Extra args to pass to container                    | `[]`    |
 | `job.extraEnvConfigMapRef`       | Name of the configmap to inject to container       | `""`    |
+
+### Dynamic/Static Secrets (Vault Secrets Operator)
+
+| Name                             | Description                                        | Value   |
+|----------------------------------|--------------------------------------------------------|---------|
+| `secrets.vault.namespace` | Namespace in Vault where the secrets are created| `admin/yiluhub` |
+| `secrets.vault.vaultSecretsOperatorName`| Name of the Vault secrets operator name | `"vault-secrets-operator"` |
+| `secrets.vault.authRef`| vault secrets operator auth ref name prefixed with the namespace |`"vault-secrets-operator/default"` |
+| `secrets.dynamicSecrets.enabled` | This value enables the dynamic secrets | `false/true` |
+| `secrets.dynamicSecrets.mountPath` | The mount path at which the secrets engine is mounted | `"eg. aws/secrets-engine"` |
+| `secrets.dynamicSecrets.secrets.name` | The name of the of the secret to be created in k8s secret resource | `""` |
+| `secrets.dynamicSecrets.secrets.type` | The type of the dynamic secret | `"aws or database"` |
+| `secrets.dynamicSecrets.secrets.permissionsRolePath` | the dynamic secrets role path in vault | `"eg. creds/service-read"` |
+
+| `secrets.staticSecrets.enabled` | This value enables the static secrets | `false/true` |
+| `secrets.staticSecrets.mountPath` | The mount path at which the secrets engine is mounted | `"kv/service/secrets"` |
+| `secrets.staticSecrets.refreshInterval` | The refresh interval of the secret | `""` |
+| `secrets.staticSecrets.secretName` | The name of the secret to be created in k8s secrets resource | `""` |
+| `secrets.staticSecrets.secretPath` | The static secrets path in vault | `"worldshop"` |
+| `secrets.staticSecrets.version` | The vault version to use | `"1"` |
+| `secrets.staticSecrets.secretKeys` | The list of secret Keys that much the keys of the specific secret in vault | `[]` |
+
+### Secrets (External Secrets Operator)
+
+| `secrets.enabled` | This value enables the external secrets | `false/true` |
+| `secrets.name` | The name of the secret to be created in k8s secrets resource | `""` |
+| `secrets.refreshInterval` | The refresh interval of the secret | `""` |
+| `secrets.data.secretKey` | The key of the secret | `"application.yaml"` |
+| `secrets.data.remoteRef.parentKey` | The vault parent key/mount path for the data | `"kv/services/secrets/data"` |
+| `secrets.data.remoteRef.property` | The key of in the vault secret | `"application.yaml"` |
+| `secrets.data.remoteRef.decodingStrategy` | The decoding strategy | `Base64` |
