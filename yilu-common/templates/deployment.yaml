@@ -1,4 +1,4 @@
-{{- $secretName := .Values.secrets.staticSecrets.secretName }}
+{{- $secretName := .Values.secrets.staticSecrets.secretName -}}
 
 ---
 apiVersion: apps/v1
