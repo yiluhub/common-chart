@@ -26,17 +26,17 @@ secrets:
     # authRef is the name of the Vault Auth resource deployed as part of the vault secrets operator. The value is namespace prefixed
   dynamicSecrets:
     enabled: false
-    secretsEngineMountPath: aws/secret-engine
+    mountPath: "aws/secret-engine"
     secrets:
       - name: ""
         type: aws
-        dynamicPermissionsRole: ""
+        awsPermissionsRolePath: "" # example creds/service-read
   staticSecrets:
     enabled: false
-    secretsEngineMountPath: kv/services/secrets
+    mountPath: "kv/services/secrets"
     refreshInterval: 1h
-    secretName: ""
-    secretPath: ""
+    secretName: "" # example worldshop-secrets, this is the name of the secret created in k8s
+    secretPath: "" # example worldshop
     version: 1
     secretKeys: []
   enabled: false
