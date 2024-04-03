@@ -12,6 +12,7 @@ if echo "${VERSION}" | grep -Eq "^[0-9]+(\.[0-9]+){2}$"; then
     echo "Release VERSION already created! Skipping release generation"
     exit 0
   else
+    REPOSITORY="https://github.com/yiluhub/common-chart.git"
     git config user.email $GITHUB_USERNAME@users.noreply.github.com
     git config user.name $GITHUB_USERNAME
     git remote set-url origin "${REPOSITORY}"
