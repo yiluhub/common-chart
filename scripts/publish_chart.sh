@@ -2,6 +2,7 @@
 set -eo pipefail
 
 VERSION=$(grep 'version: [0-9]\+\.[0-9]\+\.[0-9]\+' "yilu-common/Chart.yaml" | cut -d':' -f2 | tr -d '[:space:]')
+GITHUB_USERNAME="yilu-travis-ci"
 # from the CI
 BRANCH_NAME=$CI_BRANCH
 LAST_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE
@@ -11,7 +12,8 @@ if echo "${VERSION}" | grep -Eq "^[0-9]+(\.[0-9]+){2}$"; then
     echo "Release VERSION already created! Skipping release generation"
     exit 0
   else
-    REPOSITORY="https://github.com/yiluhub/common-chart.git"
+    git config user.email $GITHUB_USERNAME@users.noreply.github.com
+    git config user.name $GITHUB_USERNAME
     git remote set-url origin "${REPOSITORY}"
     echo "✅ Set remote origin to $REPOSITORY"
     git checkout "$BRANCH_NAME"
