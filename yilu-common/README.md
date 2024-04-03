@@ -412,7 +412,6 @@ To know which exact `awsPermissionsRolePath` value to use for a given environmen
 | `secrets.dynamicSecrets.secrets.name` | The name of the of the secret to be created in k8s secret resource | `""` |
 | `secrets.dynamicSecrets.secrets.type` | The type of the dynamic secret | `"aws or database"` |
 | `secrets.dynamicSecrets.secrets.permissionsRolePath` | the dynamic secrets role path in vault | `"eg. creds/service-read"` |
-
 | `secrets.staticSecrets.enabled` | This value enables the static secrets | `false/true` |
 | `secrets.staticSecrets.mountPath` | The mount path at which the secrets engine is mounted | `"kv/service/secrets"` |
 | `secrets.staticSecrets.refreshInterval` | The refresh interval of the secret | `""` |
@@ -423,6 +422,8 @@ To know which exact `awsPermissionsRolePath` value to use for a given environmen
 
 ### Secrets (External Secrets Operator)
 
+| Name                             | Description                                        | Value   |
+|----------------------------------|--------------------------------------------------------|---------|
 | `secrets.enabled` | This value enables the external secrets | `false/true` |
 | `secrets.name` | The name of the secret to be created in k8s secrets resource | `""` |
 | `secrets.refreshInterval` | The refresh interval of the secret | `""` |
