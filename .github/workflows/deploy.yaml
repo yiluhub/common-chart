@@ -32,7 +32,6 @@ jobs:
       - name: Publish
         run: ./scripts/publish_chart.sh
         env:
-          TRAVIS_GITHUB_TOKEN: ${{ secrets.TRAVIS_GITHUB_TOKEN }}
           CI_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
           CI_BRANCH: ${{ steps.extract_branch_name.outputs.BRANCH_NAME }}
 
