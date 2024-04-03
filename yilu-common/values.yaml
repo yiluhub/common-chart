@@ -30,7 +30,7 @@ secrets:
     secrets:
       - name: ""
         type: aws
-        awsPermissionsRolePath: "" # example creds/service-read
+        permissionsRolePath: "" # example creds/service-read
   staticSecrets:
     enabled: false
     mountPath: "kv/services/secrets"
