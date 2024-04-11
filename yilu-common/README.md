@@ -413,7 +413,7 @@ To know which exact `permissionsRolePath` value to use for a given environment, 
 | `secrets.dynamicSecrets.secrets.name` | The name of the of the secret to be created in k8s secret resource | `""` |
 | `secrets.dynamicSecrets.secrets.type` | The type of the dynamic secret | `"aws or database"` |
 | `secrets.dynamicSecrets.secrets.permissionsRolePath` | the dynamic secrets role path in vault | `"eg. creds/service-read"` |
-| `secrets.dynamicSecrets.secrets.renewalPercent | percentage of the TTL at which the secret is renewed. value is represented as % (percentage), so 70 is 70% of the TTL | `"eg. 70` |
+| `secrets.dynamicSecrets.secrets.renewalPercent` | percentage of the TTL at which the secret is renewed. value is represented as % (percentage), so 70 is 70% of the TTL | `"eg. 70"` |
 | `secrets.staticSecrets.enabled` | This value enables the static secrets | `false/true` |
 | `secrets.staticSecrets.mountPath` | The mount path at which the secrets engine is mounted | `"kv/service/secrets"` |
 | `secrets.staticSecrets.refreshInterval` | The refresh interval of the secret | `""` |
