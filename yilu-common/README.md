@@ -297,7 +297,7 @@ When you enable secrets, `secrets.enabled`, Kubernetes will fetch the secret fro
 
 ### Adding dynamic and static secrets with vault secrets operator
 
-To enable the `dynamicSecrets`, you need to set `enabled` as true, provide a valid `mountPath`, `awsPermissionsRolePath`.
+To enable the `dynamicSecrets`, you need to set `enabled` as true, provide a valid `mountPath`, `permissionsRolePath`.
 
 To enable the `staticSecrets`, you need to set `enabled` as true, provide a valid `mountPath`, `secretName`, `secretPath`, `secretKeys`
 
@@ -312,7 +312,8 @@ yilu-common:
       secrets:
         - name: "some-name" # something like worldshop
           type: "type of dynamic secrets engine" # example: aws
-          awsPermissionsRolePath: "vault role path here>" # example: creds/service-read"
+          permissionsRolePath: "vault role path here>" # example: creds/service-read"
+          renewalPercent: 70
     staticSecrets:
       enabled: false
       mountPath: "<some path here>" # example: kv/services/secrets
@@ -327,7 +328,7 @@ yilu-common:
 
 The `secretKeys` are the ones that will be assigned to env vars for the deployment, they also match the keys in vault for the specific secret
 
-To know which exact `awsPermissionsRolePath` value to use for a given environment, you need to check the respective vault for the given environment under the `aws/secrets-engine` for AWS, and among the roles, select one with the permissions your application needs.
+To know which exact `permissionsRolePath` value to use for a given environment, you need to check the respective vault for the given environment under the `aws/secrets-engine` for AWS, and among the roles, select one with the permissions your application needs.
 
 ```NOTE: This secrets stanza is the same one used by the external secrets operator. This will remain the same for now until we fully migrate to the new vault secrets operator to avoid confusion.
 ```
@@ -412,6 +413,7 @@ To know which exact `awsPermissionsRolePath` value to use for a given environmen
 | `secrets.dynamicSecrets.secrets.name` | The name of the of the secret to be created in k8s secret resource | `""` |
 | `secrets.dynamicSecrets.secrets.type` | The type of the dynamic secret | `"aws or database"` |
 | `secrets.dynamicSecrets.secrets.permissionsRolePath` | the dynamic secrets role path in vault | `"eg. creds/service-read"` |
+| `secrets.dynamicSecrets.secrets.renewalPercent | percentage of the TTL at which the secret is renewed. value is represented as % (percentage), so 70 is 70% of the TTL | `"eg. 70` |
 | `secrets.staticSecrets.enabled` | This value enables the static secrets | `false/true` |
 | `secrets.staticSecrets.mountPath` | The mount path at which the secrets engine is mounted | `"kv/service/secrets"` |
 | `secrets.staticSecrets.refreshInterval` | The refresh interval of the secret | `""` |

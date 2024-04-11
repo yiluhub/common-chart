@@ -31,6 +31,7 @@ secrets:
       - name: ""
         type: aws
         permissionsRolePath: "" # example creds/service-read
+        renewalPercent: 70 # Renew the secret when it's TTL reaches this value in % (percentage)
   staticSecrets:
     enabled: false
     mountPath: "kv/services/secrets"
