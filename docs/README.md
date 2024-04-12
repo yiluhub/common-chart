@@ -13,7 +13,7 @@ But generated manifest is still same.
 
 ### Migration from 0.2.z to 0.3.z
 
-with the new template you don't have to explicitly import values when using the chart. 
+with the new template you don't have to explicitly import values when using the chart.
 
 this is how it used to be with versions 0.2.z
 
@@ -86,10 +86,13 @@ all necessary files for the deployment. Also clean the variables from values.yam
 ```
 
 Add yilu-common repo to your helm repos list.
+
 ```bash
 ~/tmp/demo-service$ helm repo add yilu-common https://yiluhub.github.io/common-chart/
 ```
+
 Now let's add yilu-common as a dependency, append the lines to Chart.yaml
+
 ```yaml
 dependencies:
   - name: yilu-common
@@ -103,7 +106,7 @@ Update dependency to fetch the chart
  ~/tmp/demo-service$ helm dependency update demo-service-chart
 Hang tight while we grab the latest from your chart repositories...
 ...Unable to get an update from the "local" chart repository (http://127.0.0.1:8879/charts):
-	Get "http://127.0.0.1:8879/charts/index.yaml": dial tcp 127.0.0.1:8879: connect: connection refused
+Get "http://127.0.0.1:8879/charts/index.yaml": dial tcp 127.0.0.1:8879: connect: connection refused
 ...Successfully got an update from the "kubernetes" chart repository
 ...Successfully got an update from the "yilu-common" chart repository
 ...Successfully got an update from the "hashicorp" chart repository
@@ -112,13 +115,14 @@ Update Complete. ⎈Happy Helming!⎈
 Saving 1 charts
 Downloading yilu-common from repo https://yiluhub.github.io/common-chart/
 Deleting outdated charts
-```  
+```
 
 Ideally, you would pass the params via values.yaml but let's test if things are fine until now.
-You should see manifest output. 
+You should see manifest output.
+
 ```bash
  ~/tmp/demo-service$ helm template  demo-service-chart --debug --set yilu-common.image.tag="test" --set serviceName="demo-service"
- 
+
  ---
 # Source: demo-service/charts/yilu-common/templates/service.yaml
 apiVersion: v1
@@ -332,6 +336,35 @@ To know which exact `permissionsRolePath` value to use for a given environment, 
 
 ```NOTE: This secrets stanza is the same one used by the external secrets operator. This will remain the same for now until we fully migrate to the new vault secrets operator to avoid confusion.
 ```
+
+### Migration from 0.5.x to 0.6.x
+
+If you are migrating from `0.6.0` or earlier, the major changes are the way we handle vault secrets.
+
+The strategy here is:
+
+1. add the new secret format, while maintaining the old one
+2. deploy the new chart
+3. once that has been applied and all looks good after deployment
+4. adjust the code of the application to read the new secrets as environment variables defined in the values.yaml file
+5. once this has been tested over a few days, then remove the old secret declarations
+
+Please follow the steps below for step 1 describe above:
+
+1. Change the chart version in the `Chart.yaml` file to `0.6.3`
+2. Set `yilu-common.secrets.dynamicSecrets.enabled` `yilu-common.secrets.staticSecrets.enabled` to `true` in your values file, depending on what your application needs. This will enable the static or dynamic secrets.
+3. For each of the dynamic secrets your application needs (aws or database), add them to the `yilu-common.secrets.dynamicSecrets.secrets` list specifying all the required attributes and values. This will hold all your dynamic secrets configurations.
+4. For each of the static secrets your application needs, add them to the `yilu-common.secrets.staticSecrets.secretKeys` exactly how they are named in vault preserving their format (uppercase or lowercase or camel case, etc).
+
+These steps will upgrade your existing Vault Secrets in Kubernetes to the new Secret Format which uses the dynamic and static secret vault engines.
+
+At this point, if the upgrade is complete and deployments work as expected with no errors, ask the developers to adjust the application code to read the "secrets" from env vars as specified in `yilu-common.secrets.staticSecrets.secretKeys` or `AWS_ACCESS_KEY_ID` `AWS_SECRET_ACCESS_KEY` for AWS dynamic credetials and `username` `password` for database dynamic credentials.
+
+Once that migration is complete, and all looks good, go ahead and remove the following keys in the helm chart as they are not needed anymore:
+
+- `yilu-common.secrets.enabled`
+- `yilu-common.secrets.refreshInterval`
+- `yilu-common.secrets.data`
 
 ## Parameters
 
