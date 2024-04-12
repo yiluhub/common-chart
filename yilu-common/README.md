@@ -337,7 +337,7 @@ To know which exact `permissionsRolePath` value to use for a given environment, 
 ```NOTE: This secrets stanza is the same one used by the external secrets operator. This will remain the same for now until we fully migrate to the new vault secrets operator to avoid confusion.
 ```
 
-### Migration from 0.6.0 to 0.6.x
+### Migration from 0.5.x to 0.6.x
 
 If you are migrating from `0.6.0` or earlier, the major changes are the way we handle vault secrets.
 
