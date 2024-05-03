@@ -18,20 +18,25 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Install Toolchain
-        run: ./scripts/install_toolchain.sh
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Run linter
-        run: helm lint yilu-common --set image.tag="test" --set serviceName="ci-test"
-
-      - name: Extract Branch Name
-        id: extract_branch_name
-        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
-
-      - name: Publish
-        run: ./scripts/publish_chart.sh
+        run: helm lint charts/yilu-common --set image.tag="test" --set serviceName="ci-test"
+      
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
         env:
-          CI_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-          CI_BRANCH: ${{ steps.extract_branch_name.outputs.BRANCH_NAME }}
-
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          pages_branch: main
