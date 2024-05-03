@@ -32,7 +32,7 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Run linter
-        run: helm lint charts/yilu-common --set image.tag="test" --set serviceName="ci-test"
+        run: helm lint yilu-common --set image.tag="test" --set serviceName="ci-test"
       
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
@@ -40,3 +40,4 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
           pages_branch: main
+          charts_dir: "."
