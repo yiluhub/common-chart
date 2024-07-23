@@ -1,0 +1,38 @@
+# Inject secrets
+secrets:
+  staticSecrets:
+    enabled: true
+    secrets:
+      - secretName: "booking-secrets" # example worldshop-secrets, this is the name of the secret created in k8s
+        secretPath: "bookings" # example worldshop
+        mountPath: "kv/services/secrets"
+        refreshInterval: 1h
+        version: ~ # set it to null to always return latest version
+        type: kv-v2
+        secretKeys:
+          - AUTHORIZATION_TOKEN
+          - WORLDSHOP_PRICING_API
+      - secretName: "payment-secrets" # example worldshop-secrets, this is the name of the secret created in k8s
+        secretPath: "payments" # example worldshop
+        mountPath: "kv/services/secrets"
+        refreshInterval: 1h
+        version: ~ # set it to null to always return latest version
+        type: kv-v2
+        secretKeys:
+          - username
+          - password
+
+
+environmentSecrets:
+  - name: SONARQUBE_TOKEN
+    secretKeyRef:
+      - name: sonarqube-secrets
+        key: token
+  - name: AWS_S3_BUCKET_ACCESS_KEY_ID
+    secretKeyRef:
+      - name: bookings-s3-secrets
+        key: access_key_id
+  - name: AWS_S3_BUCKET_ACCESS_SECRET
+    secretKeyRef:
+      - name: bookings-s3-secrets
+        key: access_secret

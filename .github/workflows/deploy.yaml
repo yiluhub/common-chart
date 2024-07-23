@@ -40,5 +40,5 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_PAGES_INDEX_PATH: docs
         with:
-          pages_branch: main
+          config: cr.yaml
           charts_dir: "."
