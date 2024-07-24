@@ -1,5 +1,13 @@
 # Inject secrets
 secrets:
+  dynamicSecrets:
+    enabled: true
+    mountPath: "aws/secret-engine"
+    secrets:
+      - name: "hede"
+        type: aws
+        permissionsRolePath: "" # example creds/service-read
+        renewalPercent: 70 # Renew the secret when it's TTL reaches this value in % (percentage)
   staticSecrets:
     enabled: true
     secrets:

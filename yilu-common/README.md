@@ -297,8 +297,8 @@ will generate the code below, please configure your secret accordingly to match 
 We have enabled Kubernetes & Vault secret integration in chart version 0.4.0 and above.
 More details can be found [here](https://yiluts.atlassian.net/wiki/spaces/YILU/pages/2463694899/HCP+Vault+-+Kubernetes+Integration)
 
-You can fetch secrets from Vault via Vault Secrets Operator(VOS).
-Either static or dynamic secrets, VOS can fetch the secret and serve you in a few ways (please check [environment-secrets](environment secrets)    (later on [secret data transformation](https://developer.hashicorp.com/vault/docs/platform/k8s/vso/secret-transformation)) will be introduced)  
+You can fetch secrets from Vault via Vault Secrets Operator(VSO).
+Either static or dynamic secrets, VSO can fetch the secret and serve you in a few ways (please check [environment-secrets](environment secrets)    (later on [secret data transformation](https://developer.hashicorp.com/vault/docs/platform/k8s/vso/secret-transformation)) will be introduced)  
 More details around adding/ updating secrets in Vault can be found [here](https://github.com/yiluhub/vault-service-secret)
 
 ### Adding dynamic and static secrets with vault secrets operator
