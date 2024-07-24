@@ -26,9 +26,13 @@ secrets:
         refreshInterval: 1h
         version: ~ # set it to null to always return latest version
         type: kv-v2
-        secretKeys:
-          - username
-          - password
+        transformation:
+          key: application.yaml
+          name: base64Decode
+
+
+aws:
+  enabled: false
 
 
 environmentSecrets:

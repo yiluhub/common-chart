@@ -28,3 +28,41 @@ Usage:
 {{- .Values.image.repository -}}
 {{- end -}}
 {{- end -}}
+
+{{/* Compile all validation warnings into a single message and call fail. */}}
+{{- define "common.validateValues" -}}
+{{- $messages := list -}}
+{{- $messages = append $messages (include "common.validateValues.staticSecrets" .) -}}
+{{- $messages = append $messages (include "common.validateValues.awsConfig" .) -}}
+{{- $messages = without $messages "" -}}
+{{- $message := join "\n" $messages -}}
+
+{{- if $message -}}
+{{- printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Validate static-secrets secret-keys and transformation not used at the same time */}}
+{{- define "common.validateValues.staticSecrets" -}}
+{{- if (and .Values.secrets.staticSecrets.enabled (not (empty .Values.secrets.staticSecrets.secrets))) -}}
+{{- range .Values.secrets.staticSecrets.secrets -}}
+{{- if (and .transformation (not (empty .secretKeys))) -}}
+common: secrets.staticSecrets
+    `secretKeys` and `transformation` can't be used together
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Validate `aws.enabled` and dynamic secrets `aws` not enabled at the same time
+both functionalities exports the same environment variables */}}
+{{- define "common.validateValues.awsConfig" -}}
+{{- if (and .Values.aws.enabled (and .Values.secrets.dynamicSecrets.enabled (not (empty .Values.secrets.dynamicSecrets.secrets)))) -}}
+{{- range .Values.secrets.dynamicSecrets.secrets -}}
+{{- if eq "aws" (toString .type) -}}
+common: secrets.dynamicSecrets.aws
+    `dynamicSecrets` with `aws` type and `aws` block can't be used together
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

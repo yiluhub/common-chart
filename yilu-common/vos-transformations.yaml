@@ -1,0 +1,18 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: SecretTransformation
+metadata:
+  name: vso-templates
+spec:
+  templates:
+    application.yaml:
+      text: '{{- template "javaAppBase64Decode" . -}}'
+  sourceTemplates:
+    - name: helpers
+      text: |
+        {{/*
+          decode application.yaml key based java secrets
+        */}}
+        {{- define "javaAppBase64Decode" -}}
+        {{- $secretValueEncoded := (get .Secrets "application.yaml") -}} 
+        {{- printf "%s" (b64dec $secretValueEncoded) -}}
+        {{- end -}}=
