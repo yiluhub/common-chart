@@ -28,7 +28,7 @@ secrets:
         type: kv-v2
         transformation:
           key: application.yaml
-          name: base64Decode
+          function: b64dec
 
 
 aws:

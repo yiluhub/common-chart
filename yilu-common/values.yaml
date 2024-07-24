@@ -42,6 +42,9 @@ secrets:
     #    version: ~ # set it to null to always return latest version
     #    secretKeys: []
     #    type: kv-v2
+    #    transformation:
+    #     key: application.yaml
+    #     function: b64dec # https://developer.hashicorp.com/vault/docs/platform/k8s/vso/secret-transformation#template-functions
   enabled: false
   name: ""
   refreshInterval: 1h

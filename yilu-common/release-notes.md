@@ -10,6 +10,7 @@
 
 ### New Features
 Environment Secrets introduced, refer to [Using Environment Secrets](README.md#using-environment-secrets)
+Introduced Static secret data transformation [Secret Data Transformation](https://developer.hashicorp.com/vault/docs/platform/k8s/vso/secret-transformation)
 ### Bug Fixes
 
 ### Other Changes

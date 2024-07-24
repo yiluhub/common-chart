@@ -342,6 +342,35 @@ To know which exact `permissionsRolePath` value to use for a given environment, 
 >NOTE: This secrets stanza is the same one used by the external secrets operator.  
 > This will remain the same for now until we fully migrate to the new vault secrets operator to avoid confusion.
 
+### Using Static Secret Data Transformations
+With version 0.6.6, [secret-data-transformation](https://developer.hashicorp.com/vault/docs/platform/k8s/vso/secret-transformation)  
+Let's think of the backend services secrets configuration, 
+it's a secret with key `application.yaml` that contains `base64` encoded secrets. 
+We need to `decode` them before creating the k8s secret. (externalsecrets had internal function to support this, decodingStrategy)
+Otherwise, we end up secrets being encoded twice (remember, k8s `base64` encodes the secret value)
+
+To be able to have the same functionality using Vault Secrets Operator transformation templates.
+For list of the functions that can be used, please check [template-functions](https://developer.hashicorp.com/vault/docs/platform/k8s/vso/secret-transformation#template-functions)
+
+```yaml
+  staticSecrets:
+    enabled: true
+    secrets:
+      - secretName: "payment-secrets" 
+        secretPath: "payments" 
+        mountPath: "kv/services/secrets"
+        type: kv-v2
+        transformation:
+          key: application.yaml
+          function: b64dec
+```
+will generate
+```yaml
+apiVersion: v1
+data:
+  application.yaml: c3ByaW5nOgogIGthZmthOgogICAgcHJvcGVydGllczoKICAgICAgc2FzbC5qYWFzLmNvbmZpZzogb3JnLmFwYWNoZS5rYWZrYS5jb21tb24uc2VjdXJpdHkucGxhaW4uUGxhaW5Mb2dpbk1vZHVsZSByZXF1aXJlZCB1c2VybmFtZT0iVUNOU0Q3N1c2VkhIM1RSNyIgcGFzc3dvcmQ9InAvVEZaSHFhTDJGN1BDMWVJNDFBZzlydHdYbE8wakpLNlNLdnZ6VS9HRjZ6SGhraTY1eHhCNWpqeFA2bXVmQU0iOwogICAgICBzY2hlbWEucmVnaXN0cnkuYmFzaWMuYXV0aC51c2VyLmluZm86IDJIVlBPSVFUQVQ2VFRRTlA6NStDUHFxY000bHQveVpSWldDRXZHQnR6cG00d2N4TTc3MjdPRlBUcC9qR1FkdHh1d1JaMzdmMVRBNXljZk9jagphd3MtczM6CiAgYnVja2V0OgogICAgYWNjZXNzLWtleTogQUtJQVdKTlVXS1NRS0RQS0JQVjUKICAgIHNlY3JldC1rZXk6IDdOOUFXSFJ6QXlVMDZScEZCV0szVk5aVWdGaEc5dW52djZoeldIcm4KYm9va2luZy1zZXR0aW5nczoKICBsdWZ0aGFuc2E6CiAgICBjbGllbnQtaWQ6IHM3ZXl4bmtua3N5MmpnZGg3azlidDU4bgogICAgY2xpZW50LXNlY3JldDogZW1oREJwek1TZTRwVk5EUktBYk4=
+kind: Secret
+```
 
 ### Using Environment Secrets
 
@@ -502,27 +531,29 @@ New Config, please don't use `version` parameter, unless you really intend to us
 
 ### Dynamic/Static Secrets (Vault Secrets Operator)
 
-| Name                                                   | Description                                                                                                                         | Value                              |
-|--------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
-| `secrets.vault.namespace`                              | Namespace in Vault where the secrets are created                                                                                    | `admin/yiluhub`                    |
-| `secrets.vault.vaultSecretsOperatorName`               | Name of the Vault secrets operator name                                                                                             | `"vault-secrets-operator"`         |
-| `secrets.vault.authRef`                                | vault secrets operator auth ref name prefixed with the namespace                                                                    | `"vault-secrets-operator/default"` |
-| `secrets.dynamicSecrets.enabled`                       | This value enables the dynamic secrets                                                                                              | `false/true`                       |
-| `secrets.dynamicSecrets.mountPath`                     | The Vault dynamic secret engine mount path                                                                                          | `"eg. aws/secrets-engine"`         |
-| `secrets.dynamicSecrets.secrets`                       | The list of secrets to be created in k8s secret resource                                                                            | `"[]"`                             |
-| `secrets.dynamicSecrets.secrets[].name`                | The name of the of the secret to be created in k8s secret resource                                                                  | `""`                               |
-| `secrets.dynamicSecrets.secrets[].type`                | The type of the dynamic secret                                                                                                      | `"aws or database"`                |
-| `secrets.dynamicSecrets.secrets[].permissionsRolePath` | the dynamic secrets role path in vault                                                                                              | `"eg. creds/service-read"`         |
-| `secrets.dynamicSecrets.secrets[].renewalPercent`      | percentage of the TTL at which the secret is renewed. value is represented as % (percentage), so 70 is 70% of the TTL               | `"eg. 70"`                         |
-| `secrets.staticSecrets.enabled`                        | This value enables the static secrets                                                                                               | `false/true`                       |
-| `secrets.staticSecrets.secrets`                        | The list of secrets to be created in k8s secret resource                                                                            | `[]`                               |
-| `secrets.staticSecrets[].secretName`                   | The name of the secret to be created in k8s secrets resource                                                                        | `""`                               |
-| `secrets.staticSecrets[].secretPath`                   | The static secrets path in vault                                                                                                    | `"worldshop"`                      |
-| `secrets.staticSecrets[].mountPath`                    | The Vault static secret engine mount path                                                                                           | `"kv/service/secrets"`             |
-| `secrets.staticSecrets[].refreshInterval`              | The refresh interval of the secret                                                                                                  | `""`                               |
-| `secrets.staticSecrets[].version`                      | The version of the secret to use, leave empty to use latest                                                                         | `"1"`                              |
-| `secrets.staticSecrets[].type`                         | The type of static secret engine                                                                                                    | `"kv-v2"`                          |
-| `secrets.staticSecrets[].secretKeys`                   | DEPRECATED use environmentSecrets, The list of secret Keys from the secret, will be exposed as environment variables with same name | `DEPRECATED[]`                     |
+| Name                                                   | Description                                                                                                                                                                                                 | Value                              |
+|--------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
+| `secrets.vault.namespace`                              | Namespace in Vault where the secrets are created                                                                                                                                                            | `admin/yiluhub`                    |
+| `secrets.vault.vaultSecretsOperatorName`               | Name of the Vault secrets operator name                                                                                                                                                                     | `"vault-secrets-operator"`         |
+| `secrets.vault.authRef`                                | vault secrets operator auth ref name prefixed with the namespace                                                                                                                                            | `"vault-secrets-operator/default"` |
+| `secrets.dynamicSecrets.enabled`                       | This value enables the dynamic secrets                                                                                                                                                                      | `false/true`                       |
+| `secrets.dynamicSecrets.mountPath`                     | The Vault dynamic secret engine mount path                                                                                                                                                                  | `"eg. aws/secrets-engine"`         |
+| `secrets.dynamicSecrets.secrets`                       | The list of secrets to be created in k8s secret resource                                                                                                                                                    | `"[]"`                             |
+| `secrets.dynamicSecrets.secrets[].name`                | The name of the of the secret to be created in k8s secret resource                                                                                                                                          | `""`                               |
+| `secrets.dynamicSecrets.secrets[].type`                | The type of the dynamic secret                                                                                                                                                                              | `"aws or database"`                |
+| `secrets.dynamicSecrets.secrets[].permissionsRolePath` | the dynamic secrets role path in vault                                                                                                                                                                      | `"eg. creds/service-read"`         |
+| `secrets.dynamicSecrets.secrets[].renewalPercent`      | percentage of the TTL at which the secret is renewed. value is represented as % (percentage), so 70 is 70% of the TTL                                                                                       | `"eg. 70"`                         |
+| `secrets.staticSecrets.enabled`                        | This value enables the static secrets                                                                                                                                                                       | `false/true`                       |
+| `secrets.staticSecrets.secrets`                        | The list of secrets to be created in k8s secret resource                                                                                                                                                    | `[]`                               |
+| `secrets.staticSecrets[].secretName`                   | The name of the secret to be created in k8s secrets resource                                                                                                                                                | `""`                               |
+| `secrets.staticSecrets[].secretPath`                   | The static secrets path in vault                                                                                                                                                                            | `"worldshop"`                      |
+| `secrets.staticSecrets[].mountPath`                    | The Vault static secret engine mount path                                                                                                                                                                   | `"kv/service/secrets"`             |
+| `secrets.staticSecrets[].refreshInterval`              | The refresh interval of the secret                                                                                                                                                                          | `""`                               |
+| `secrets.staticSecrets[].version`                      | The version of the secret to use, leave empty to use latest                                                                                                                                                 | `"1"`                              |
+| `secrets.staticSecrets[].type`                         | The type of static secret engine                                                                                                                                                                            | `"kv-v2"`                          |
+| `secrets.staticSecrets[].secretKeys`                   | DEPRECATED use environmentSecrets, The list of secret Keys from the secret, will be exposed as environment variables with same name                                                                         | `DEPRECATED[]`                     |
+| `secrets.staticSecrets[].transformation.key`           | The key of the vault secret will be fetch from Vault and will be used with same name for k8s secret                                                                                                         | `""`                               |
+| `secrets.staticSecrets[].transformation.function`      | The transformation template function to be applied to secret, refer [here](https://developer.hashicorp.com/vault/docs/platform/k8s/vso/secret-transformation#template-functions) for all supported function | `""`                               |
 
 ### DEPRECATED - Secrets (External Secrets Operator) 
 
