@@ -33,12 +33,14 @@ jobs:
 
       - name: Run linter
         run: helm lint yilu-common --set image.tag="test" --set serviceName="ci-test"
-      
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+
+      - name: Extract Branch Name
+        id: extract_branch_name
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+
+      - name: Publish
+        run: ./scripts/publish_chart.sh
         env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_PAGES_INDEX_PATH: docs
-        with:
-          config: cr.yaml
-          charts_dir: "."
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CI_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          CI_BRANCH: ${{ steps.extract_branch_name.outputs.BRANCH_NAME }}
