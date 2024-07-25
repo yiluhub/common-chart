@@ -34,12 +34,17 @@ secrets:
         renewalPercent: 70 # Renew the secret when it's TTL reaches this value in % (percentage)
   staticSecrets:
     enabled: false
-    mountPath: "kv/services/secrets"
-    refreshInterval: 1h
-    secretName: "" # example worldshop-secrets, this is the name of the secret created in k8s
-    secretPath: "" # example worldshop
-    version: 1
-    secretKeys: []
+    secrets: []
+    #  - secretName: "" # example worldshop-secrets, this is the name of the secret created in k8s
+    #    secretPath: "" # example worldshop
+    #    mountPath: "kv/services/secrets"
+    #    refreshInterval: 1h
+    #    version: ~ # set it to null to always return latest version
+    #    secretKeys: []
+    #    type: kv-v2
+    #    transformation:
+    #     key: application.yaml
+    #     function: b64dec # https://developer.hashicorp.com/vault/docs/platform/k8s/vso/secret-transformation#template-functions
   enabled: false
   name: ""
   refreshInterval: 1h
@@ -49,6 +54,26 @@ secrets:
       parentKey: kv/services/secrets/data
       property: application.yaml
       decodingStrategy: Base64
+
+  # -- Optionally specify additional environment variables to be populated from Kubernetes secrets.
+  # this gives flexibility to map secrets to desired environment variables
+environmentSecrets:
+  # - name: SONARQUBE_TOKEN
+  #   secretKeyRef:
+  #     name: sonarqube-secrets
+  #     key: token
+  # - name: AWS_S3_BUCKET_ACCESS_KEY_ID
+  #   secretKeyRef:
+  #     name: bookings-s3-secrets
+  #     key: access_key_id
+  # - name: AWS_S3_BUCKET_ACCESS_SECRET
+  #   secretKeyRef:
+  #     name: bookings-s3-secrets
+  #     key: access_secret
+  # - name: ATLANTIS_GH_WEBHOOK_SECRET
+  #   secretKeyRef:
+  #     name: atlantis-secrets
+  #     key: github_webhook_secret
 
 # aws:
 aws:

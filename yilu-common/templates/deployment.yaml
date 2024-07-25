@@ -1,6 +1,3 @@
-{{- $secretName := .Values.secrets.staticSecrets.secretName -}}
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -119,12 +116,16 @@ spec:
 {{- end }}
 {{- end }}
 {{- if .Values.secrets.staticSecrets.enabled }}
-{{- range .Values.secrets.staticSecrets.secretKeys }}
+{{- range .Values.secrets.staticSecrets.secrets }}
+{{/* helm range changes scope. */}}
+{{- $secretsScope := . -}}
+{{- range .secretKeys }}
         - name: {{ . }}
           valueFrom:
             secretKeyRef:
-              name: {{ $secretName }}
+              name: {{ $secretsScope.secretName }}
               key: {{ . }}
+{{- end }}
 {{- end }}
 {{- end }}
         - name: DD_AGENT_HOST
