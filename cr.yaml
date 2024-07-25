@@ -1,4 +1,5 @@
 pages-branch: main
 pages-index-path: /docs/index.yaml
-release-name-template: "v{{ .Version }}"
-release-notes-file: yilu-common/release-notes.md
+release-name-template: "yilu-common-{{ .Version }}"
+release-notes-file: release-notes.md
+package-path: docs

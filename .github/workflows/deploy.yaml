@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} has triggered a Deploy Workflow! 🚀
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/YAF-5286-fix-release]
 
 jobs:
   package-and-publish:
@@ -33,12 +33,14 @@ jobs:
 
       - name: Run linter
         run: helm lint yilu-common --set image.tag="test" --set serviceName="ci-test"
+
+      - name: copy README.md
+        run: cp yilu-common/README.md docs/
       
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_PAGES_INDEX_PATH: docs
         with:
           config: cr.yaml
           charts_dir: "."
