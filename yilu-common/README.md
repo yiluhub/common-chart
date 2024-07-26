@@ -11,51 +11,6 @@ with the version `0.3.0` breaking changes are introduced and template is not bac
 Lots of changes on how the templates are configured.
 But generated manifest is still same.
 
-### Migration from 0.2.z to 0.3.z
-
-with the new template you don't have to explicitly import values when using the chart.
-
-this is how it used to be with versions 0.2.z
-
-in the requirements.yaml (Helm v2) or in the Chart.yaml(Helm v3) calling import-values block is mandatory
-
-```yaml
-dependencies:
-  - name: yilu-common
-    version: 0.2.0
-    repository: https://yiluhub.github.io/common-chart/
-    import-values:
-      - data
-```
-
-```yaml
-serviceName: "communication-engine"
-yilu-common:
-  exports:
-    data:
-      secretsEnabled: true
-      secretsName: communication-engine-secrets
-```
-
-and now it's simplified, import-values is not necessary.
-
-```yaml
-dependencies:
-  - name: yilu-common
-    version: 0.3.0
-    repository: https://yiluhub.github.io/common-chart/
-```
-
-also notice exports:data is not necessary, parameter names also changed. please refer to [parameters](#parameters) part of this documentation
-
-```yaml
-yilu-common:
-  serviceName: "communication-engine"
-  secrets:
-    enabled: true
-    name: communication-engine-secrets
-```
-
 ## USAGE
 
 ### How to use
@@ -266,9 +221,9 @@ job:
     - -v
 ```
 
-### AWS Configuration
+### Deprecated - AWS Configuration
 
-Configuring AWS access for your app is done via injecting AWS credentials to container
+Configuring AWS access for your app is done via injecting existing k8s secret containing AWS credentials to container
 
 ```yaml
 aws:
@@ -292,13 +247,38 @@ will generate the code below, please configure your secret accordingly to match 
           key: secret
 ```
 
+#### New Method Static Secrets & Environment Secrets
+Please use staticSecret and environment secrets to generate the same configuration.
+
+
+```yaml
+yilu-common:
+  staticSecrets:
+    enabled: true
+    secrets:
+    - secretName: "bookings-s3-secrets"
+      secretPath: "aws_s3_credentials"
+      mountPath: "kv/infra/secrets"
+      type: kv-v2
+      
+  environmentSecrets:
+    - name: AWS_ACCESS_KEY_ID
+      secretKeyRef:
+        name: bookings-s3-secrets
+        key: key_id
+    - name: AWS_SECRET_ACCESS_KEY
+      secretKeyRef:
+        name: bookings-s3-secrets
+        key: secret
+```
+
 ### Secrets Configuration
 
 We have enabled Kubernetes & Vault secret integration in chart version 0.4.0 and above.
 More details can be found [here](https://yiluts.atlassian.net/wiki/spaces/YILU/pages/2463694899/HCP+Vault+-+Kubernetes+Integration)
 
 You can fetch secrets from Vault via Vault Secrets Operator(VSO).
-Either static or dynamic secrets, VSO can fetch the secret and serve you in a few ways (please check [environment-secrets](environment secrets)    (later on [secret data transformation](https://developer.hashicorp.com/vault/docs/platform/k8s/vso/secret-transformation)) will be introduced)  
+Either static or dynamic secrets, VSO can fetch the secret and serve you in a few ways (please check [environment-secrets](#using-environment-secrets)    (later on [secret data transformation](https://developer.hashicorp.com/vault/docs/platform/k8s/vso/secret-transformation)) will be introduced)  
 More details around adding/ updating secrets in Vault can be found [here](https://github.com/yiluhub/vault-service-secret)
 
 ### Adding dynamic and static secrets with vault secrets operator
@@ -370,6 +350,23 @@ apiVersion: v1
 data:
   application.yaml: c3ByaW5nOgogIGthZmthOgogICAgcHJvcGVydGllczoKICAgICAgc2FzbC5qYWFzLmNvbmZpZzogb3JnLmFwYWNoZS5rYWZrYS5jb21tb24uc2VjdXJpdHkucGxhaW4uUGxhaW5Mb2dpbk1vZHVsZSByZXF1aXJlZCB1c2VybmFtZT0iVUNOU0Q3N1c2VkhIM1RSNyIgcGFzc3dvcmQ9InAvVEZaSHFhTDJGN1BDMWVJNDFBZzlydHdYbE8wakpLNlNLdnZ6VS9HRjZ6SGhraTY1eHhCNWpqeFA2bXVmQU0iOwogICAgICBzY2hlbWEucmVnaXN0cnkuYmFzaWMuYXV0aC51c2VyLmluZm86IDJIVlBPSVFUQVQ2VFRRTlA6NStDUHFxY000bHQveVpSWldDRXZHQnR6cG00d2N4TTc3MjdPRlBUcC9qR1FkdHh1d1JaMzdmMVRBNXljZk9jagphd3MtczM6CiAgYnVja2V0OgogICAgYWNjZXNzLWtleTogQUtJQVdKTlVXS1NRS0RQS0JQVjUKICAgIHNlY3JldC1rZXk6IDdOOUFXSFJ6QXlVMDZScEZCV0szVk5aVWdGaEc5dW52djZoeldIcm4KYm9va2luZy1zZXR0aW5nczoKICBsdWZ0aGFuc2E6CiAgICBjbGllbnQtaWQ6IHM3ZXl4bmtua3N5MmpnZGg3azlidDU4bgogICAgY2xpZW50LXNlY3JldDogZW1oREJwek1TZTRwVk5EUktBYk4=
 kind: Secret
+```
+
+>[!IMPORTANT]
+> And now we need to mount this secret to container and pass a value so spring framework can find the file
+> This is required because monorepo and amp-monorepo configured to mount the secrets
+> in future we need to switch to reading secrets from environment values
+
+```yaml
+yilu-common:
+  extraVolumeMounts:
+    - name: payment-secrets
+      mountPath: /etc/secrets
+
+  extraEnv:
+    - name: SPRING_CONFIG_ADDITIONAL-LOCATION
+      value: file:/etc/secrets/
+
 ```
 
 ### Using Environment Secrets
@@ -465,22 +462,24 @@ New Config, please don't use `version` parameter, unless you really intend to us
 
 ## Yilu-Common parameters
 
-| Name                     | Description                                                       | Value                                                     |
-|--------------------------|-------------------------------------------------------------------|-----------------------------------------------------------|
-| `serviceName`            | Service name, *mandatory*                                         | ``                                                        |
-| `containerName`          | Service container name                                            | ``                                                        |
-| `image.repository`       | Service image repository                                          | `432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub` |
-| `image.tag`              | Service image tag (immutable tags are recommended), *mandatory*   | `""`                                                      |
-| `image.pullPolicy`       | Service image pull policy                                         | `Always`                                                  |
-| `secrets.enabled`        | Enable injection of existing secrets                              | `false`                                                   |
-| `secrets.name`           | name of the existing secrets                                      | `""`                                                      |
-| `aws.enabled`            | Enable injection of AWS credentials via secrets                   | `false`                                                   |
-| `aws.secretKeyRefName`   | name of the existing secrets contains AWS credentials             | `""`                                                      |
-| `args`                   | Override default container args (useful when using custom images) | `[]`                                                      |
-| `extraEnv`               | Extra environment variables to be set on the container            | `[]`                                                      |
-| `mockClientsConfEnabled` | Setup environment variables for Mocking (useful for dev)          | `false`                                                   |
-| `labels`                 | labels to add to container                                        | `""`                                                      |
-| `resources`              | add resource request                                              | `"check readme file"`                                     |
+| Name                     | Description                                                                                                                  | Value                                                     |
+|--------------------------|------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|
+| `serviceName`            | Service name, *mandatory*                                                                                                    | ``                                                        |
+| `containerName`          | Service container name                                                                                                       | ``                                                        |
+| `image.repository`       | Service image repository                                                                                                     | `432560034976.dkr.ecr.eu-central-1.amazonaws.com/yiluhub` |
+| `image.tag`              | Service image tag (immutable tags are recommended), *mandatory*                                                              | `""`                                                      |
+| `image.pullPolicy`       | Service image pull policy                                                                                                    | `Always`                                                  |
+| `secrets.enabled`        | Enable injection of existing secrets                                                                                         | `false`                                                   |
+| `secrets.name`           | name of the existing secrets                                                                                                 | `""`                                                      |
+| `aws.enabled`            | DEPRECATED- Enable injection of AWS credentials via secrets                                                                  | `DEPRECATED - false`                                      |
+| `aws.secretKeyRefName`   | DEPRECATED - name of the existing secrets contains AWS credentials                                                           | `"DEPRECATED " `                                          |
+| `args`                   | Override default container args (useful when using custom images)                                                            | `[]`                                                      |
+| `extraEnv`               | Extra environment variables to be set on the container                                                                       | `[]`                                                      |
+| `extraVolumeMounts`      | Extra volume mounts to be configured on the container, for details please refer to [extraVolumeMounts](#extra-volume-mounts) | `[]`                                                      |
+| `environmentSecrets`     | Extra environment values to be set from given secret, for details please refer to [environmentSecrets](#environment-secrets) | `[]`                                                      |
+| `mockClientsConfEnabled` | Setup environment variables for Mocking (useful for dev)                                                                     | `false`                                                   |
+| `labels`                 | labels to add to container                                                                                                   | `""`                                                      |
+| `resources`              | add resource request                                                                                                         | `"check readme file"`                                     |
 
 ### Exposure parameters
 
@@ -575,3 +574,12 @@ New Config, please don't use `version` parameter, unless you really intend to us
 | `name`                                    | The name of the environment variable         | `""`  |
 | `secretKeyRef.name`                       | The name of the kubernetes secret name       | `""`  |
 | `secretKeyRef.key`                        | The key of the given kubernetes secret name  | `""`  |
+
+
+### Extra Volume Mounts
+
+| Name               | Description                                  | Value |
+|--------------------|----------------------------------------------|-------|
+| `name`             | The name of the environment variable         | `""`  |
+| `mountPath`        | The name of the kubernetes secret name       | `""`  |
+
