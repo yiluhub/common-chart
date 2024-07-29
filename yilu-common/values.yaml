@@ -87,6 +87,14 @@ mockClientsConfEnabled: false
 #    value: flixbus-alternative
 extraEnv: []
 
+
+# -- Optionally specify additional volume mounts for the container.
+# Check values.yaml for examples.
+extraVolumeMounts: []
+# extraVolumeMounts:
+#   - name: some-volume-name
+#     mountPath: /path/in/container
+
 #
 #  labels: |
 #    app.kubernetes.io/component: microservice

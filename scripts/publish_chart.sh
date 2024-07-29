@@ -24,6 +24,9 @@ if echo "${VERSION}" | grep -Eq "^[0-9]+(\.[0-9]+){2}$"; then
     git commit -m "version $VERSION has been created"
     git push origin "$BRANCH_NAME"
     echo "✅ Published charts"
+    echo "creating a release, adding the tag:yilu-common-$VERSION"
+    git tag -a yilu-common-"$VERSION" -m "yilu-common chart version: $VERSION"
+    git push origin yilu-common-"$VERSION"
   fi
 else
     echo "Not a valid semver release tag! Skip charts package"

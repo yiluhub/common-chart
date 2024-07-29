@@ -34,17 +34,17 @@ spec:
         {{- end }}
         ports:
         - containerPort: {{ .Values.service.port }}
-{{- if .Values.service.https.enabled }}
+        {{- if .Values.service.https.enabled }}
         - containerPort: {{ .Values.service.https.port }}
-{{- end }}
+        {{- end }}
         envFrom:
         - configMapRef:
             name: spring-boot-cloud
-{{- if .Values.mockClientsConfEnabled }}
+        {{- if .Values.mockClientsConfEnabled }}
         - configMapRef:
             name: mock-clients-configuration
             optional: true
-{{- end }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: {{ .Values.livenessProbe.path }}
@@ -56,13 +56,13 @@ spec:
             port: {{ .Values.service.port }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
         env:
-{{- if .Values.extraEnv }}
-{{- include "common.tplvalues.render" (dict "value" .Values.extraEnv "context" $) | nindent 8 }}
-{{- end }}
-{{- if .Values.secrets.enabled }}
+        {{- if .Values.extraEnv }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.extraEnv "context" $) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.secrets.enabled }}
         - name: SPRING_CONFIG_ADDITIONAL-LOCATION
           value: file:/etc/secrets/
-{{- end }}
+        {{- end }}
         - name: SPRING_ENVIRONMENT
           valueFrom:
             configMapKeyRef:
@@ -75,7 +75,7 @@ spec:
               key: cloud.environment
         - name: SERVER_PORT
           value: {{ quote .Values.service.port }}
-{{- if .Values.aws.enabled }}
+      {{- if .Values.aws.enabled }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -86,10 +86,10 @@ spec:
             secretKeyRef:
               name: {{ .Values.aws.secretKeyRefName }}
               key: secret
-{{- end }}
-{{- if .Values.secrets.dynamicSecrets.enabled }}
-{{- range .Values.secrets.dynamicSecrets.secrets }}
-{{- if eq .type "aws" }}
+      {{- end }}
+      {{- if .Values.secrets.dynamicSecrets.enabled }}
+      {{- range .Values.secrets.dynamicSecrets.secrets }}
+      {{- if eq .type "aws" }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -100,8 +100,8 @@ spec:
             secretKeyRef:
               name: {{ .name }}
               key: secret_key
-{{- end }}
-{{- if eq .type "database" }}
+      {{- end }}
+      {{- if eq .type "database" }}
         - name: USERNAME
           valueFrom:
             secretKeyRef:
@@ -112,22 +112,28 @@ spec:
             secretKeyRef:
               name: {{ .name }}
               key: password
-{{- end }}
-{{- end }}
-{{- end }}
-{{- if .Values.secrets.staticSecrets.enabled }}
-{{- range .Values.secrets.staticSecrets.secrets }}
-{{/* helm range changes scope. */}}
-{{- $secretsScope := . -}}
-{{- range .secretKeys }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.secrets.staticSecrets.enabled }}
+      {{- range .Values.secrets.staticSecrets.secrets }}
+      {{- $secretsScope := . -}}
+      {{- range .secretKeys }}
         - name: {{ . }}
           valueFrom:
             secretKeyRef:
               name: {{ $secretsScope.secretName }}
               key: {{ . }}
-{{- end }}
-{{- end }}
-{{- end }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- range .Values.environmentSecrets }}
+        - name: {{ .name }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .secretKeyRef.name }}
+              key: {{ .secretKeyRef.key }}
+      {{- end }}
         - name: DD_AGENT_HOST
           valueFrom:
             fieldRef:
@@ -151,20 +157,25 @@ spec:
             configMapKeyRef:
               name: datadog-config
               key: apm.enabled
-{{- if .Values.datadog.analyzedSpansEnabled }}
+      {{- if .Values.datadog.analyzedSpansEnabled }}
         - name: DD_APM_ANALYZED_SPANS
           value: 'true'
-{{- end }}
-{{- if .Values.secrets.enabled }}
+      {{- end }}
         volumeMounts:
+        {{- if .Values.secrets.enabled }}
         - name: {{ .Values.secrets.name }}
           mountPath: /etc/secrets/
           readOnly: true
+        {{- end }}
+        {{- if .Values.extraVolumeMounts }}
+        {{- toYaml .Values.extraVolumeMounts | nindent 10 }}
+        {{- end }}
       volumes:
+      {{- if .Values.secrets.enabled }}
       - name: {{ .Values.secrets.name }}
         secret:
           secretName: {{ .Values.secrets.name }}
-{{- end }}
+      {{- end }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

@@ -38,13 +38,21 @@ aws:
 environmentSecrets:
   - name: SONARQUBE_TOKEN
     secretKeyRef:
-      - name: sonarqube-secrets
-        key: token
+      name: sonarqube-secrets
+      key: token
   - name: AWS_S3_BUCKET_ACCESS_KEY_ID
     secretKeyRef:
-      - name: bookings-s3-secrets
-        key: access_key_id
+      name: bookings-s3-secrets
+      key: access_key_id
   - name: AWS_S3_BUCKET_ACCESS_SECRET
     secretKeyRef:
-      - name: bookings-s3-secrets
-        key: access_secret
+      name: bookings-s3-secrets
+      key: access_secret
+
+extraVolumeMounts:
+  - name: booking-secrets
+    mountPath: /etc/secrets
+
+extraEnv:
+  - name: SPRING_CONFIG_ADDITIONAL-LOCATION
+    value: file:/etc/secrets/
