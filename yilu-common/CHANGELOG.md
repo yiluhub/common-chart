@@ -14,6 +14,7 @@
 Environment Secrets introduced, refer to [Using Environment Secrets](README.md#using-environment-secrets)
 Introduced Static secret data transformation [Secret Data Transformation](https://developer.hashicorp.com/vault/docs/platform/k8s/vso/secret-transformation)
 Extra Volume Mounts introduced, refer to [Extra Volume Mounts](README.md#extra-volume-mounts)
+Extra Volumes  introduced, refer to [Extra Volumes](README.md#extra-volume-mounts)
 ### Bug Fixes
 
 ### Other Changes
