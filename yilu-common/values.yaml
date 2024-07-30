@@ -95,6 +95,16 @@ extraVolumeMounts: []
 #   - name: some-volume-name
 #     mountPath: /path/in/container
 
+# -- Optionally specify additional volumes for the pod.
+# Check values.yaml for examples.
+extraVolumes:
+#  - name: ejson-keys
+#    secret:
+#      secretName: ejson-keys
+#  - name: some-volume-name
+#    emptyDir: {}
+
+
 #
 #  labels: |
 #    app.kubernetes.io/component: microservice
