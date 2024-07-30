@@ -176,6 +176,9 @@ spec:
         secret:
           secretName: {{ .Values.secrets.name }}
       {{- end }}
+      {{- if .Values.extraVolumes }}
+      {{- toYaml .Values.extraVolumes | nindent 6 }}
+      {{- end }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

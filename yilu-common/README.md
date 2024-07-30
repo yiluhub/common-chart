@@ -362,6 +362,11 @@ yilu-common:
   extraVolumeMounts:
     - name: payment-secrets
       mountPath: /etc/secrets
+      
+  extraVolumes:
+    - name: payment-secrets
+      secret:
+        secretName: payment-secrets
 
   extraEnv:
     - name: SPRING_CONFIG_ADDITIONAL-LOCATION
@@ -582,4 +587,11 @@ New Config, please don't use `version` parameter, unless you really intend to us
 |--------------------|----------------------------------------------|-------|
 | `name`             | The name of the environment variable         | `""`  |
 | `mountPath`        | The name of the kubernetes secret name       | `""`  |
+
+### Extra Volumes
+
+| Name   | Description                                                                                                                             | Value |
+|--------|-----------------------------------------------------------------------------------------------------------------------------------------|-------|
+| `name` | The name of the extra volume                                                                                                            | `""`  |
+| 'body' | either empty dir, or generate from secret or configmap, [please refer here](https://kubernetes.io/docs/concepts/configuration/secret/)  | `""`  |
 

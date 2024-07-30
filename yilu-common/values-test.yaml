@@ -53,6 +53,11 @@ extraVolumeMounts:
   - name: booking-secrets
     mountPath: /etc/secrets
 
+extraVolumes:
+  - name: booking-secrets
+    secret:
+      secretName: booking-secrets
+
 extraEnv:
   - name: SPRING_CONFIG_ADDITIONAL-LOCATION
     value: file:/etc/secrets/
