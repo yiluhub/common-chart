@@ -12,10 +12,12 @@ args: []
 livenessProbe:
   path: /actuator/health
   initialDelaySeconds: 300
+  timeoutSeconds: 3
 
 readinessProbe:
   path: /actuator/health
   initialDelaySeconds: 30
+  timeoutSeconds: 3
 
 # Inject secrets
 secrets:
