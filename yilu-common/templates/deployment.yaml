@@ -50,11 +50,13 @@ spec:
             path: {{ .Values.livenessProbe.path }}
             port: {{ .Values.service.port }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
         readinessProbe:
           httpGet:
             path: {{ .Values.readinessProbe.path }}
             port: {{ .Values.service.port }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
         env:
         {{- if .Values.extraEnv }}
         {{- include "common.tplvalues.render" (dict "value" .Values.extraEnv "context" $) | nindent 8 }}
