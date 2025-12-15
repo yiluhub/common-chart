@@ -497,12 +497,14 @@ New Config, please don't use `version` parameter, unless you really intend to us
 
 ### Service Health
 
-| Name                                   | Description                                         | Value              |
-|----------------------------------------|-----------------------------------------------------|--------------------|
-| `livenessProbe.path`                   | LivenessProbe path                                  | `/actuator/health` |
-| `livenessProbe.initialDelaySeconds`    | LivenessProbe initial delay second to make request  | `300`              |
-| `readinessProbe.path`                  | ReadinessProbe path                                 | `/actuator/health` |
-| `readinessProbe.initialDelaySeconds`   | ReadinessProbe initial delay second to make request | `30`               |
+| Name                                 | Description                                                       | Value              |
+|--------------------------------------|-------------------------------------------------------------------|--------------------|
+| `livenessProbe.path`                 | LivenessProbe path                                                | `/actuator/health` |
+| `livenessProbe.port`                 | LivenessProbe port. If empty/null, falls back to `service.port`   | `""`               |
+| `livenessProbe.initialDelaySeconds`  | LivenessProbe initial delay second to make request                | `300`              |
+| `readinessProbe.path`                | ReadinessProbe path                                               | `/actuator/health` |
+| `readinessProbe.port`                | ReadinessProbe port. If empty/null, falls back to `service.port`  | `""`               |
+| `readinessProbe.initialDelaySeconds` | ReadinessProbe initial delay second to make request               | `30`               |
 
 ### Monitoring
 
