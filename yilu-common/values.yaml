@@ -13,11 +13,13 @@ livenessProbe:
   path: /actuator/health
   initialDelaySeconds: 300
   timeoutSeconds: 3
+  port:
 
 readinessProbe:
   path: /actuator/health
   initialDelaySeconds: 30
   timeoutSeconds: 3
+  port:
 
 # Inject secrets
 secrets:

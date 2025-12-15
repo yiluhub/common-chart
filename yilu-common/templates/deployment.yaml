@@ -48,13 +48,13 @@ spec:
         livenessProbe:
           httpGet:
             path: {{ .Values.livenessProbe.path }}
-            port: {{ .Values.service.port }}
+            port: {{ default .Values.service.port .Values.livenessProbe.port }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
         readinessProbe:
           httpGet:
             path: {{ .Values.readinessProbe.path }}
-            port: {{ .Values.service.port }}
+            port: {{ default .Values.service.port .Values.readinessProbe.port }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
         env:
